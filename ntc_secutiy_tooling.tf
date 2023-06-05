@@ -19,7 +19,7 @@ module "security_tooling" {
   securityhub_reports_configuration = [
     {
       report_name = "test-report"
-      schedule = "WEEKLY"
+      schedule = "DAILY"
       subscriptions = [
         {
           protocol = "email"
