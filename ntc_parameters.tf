@@ -7,12 +7,7 @@ locals {
 
   # parameters that are managed by core security account
   ntc_parameters_to_write = {
-    config : {}
-    config_member : {}
-    security_hub : {}
-    security_hub_member : {}
-    guard_duty : {}
-    guard_duty_member : {}
+    config_iam_role_name = module.security_tooling.config_iam_role_name
   }
 
   # by default existing node parameters will be merged with new parameters to avoid deleting parameters
@@ -26,6 +21,10 @@ module "ntc_parameters_reader" {
   source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-parameters//modules/reader?ref=beta"
 
   bucket_name = local.ntc_parameters_bucket_name
+
+  providers = {
+    aws = aws.euc1
+  }
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -37,4 +36,8 @@ module "ntc_parameters_writer" {
   bucket_name     = local.ntc_parameters_bucket_name
   parameter_node  = local.ntc_parameters_writer_node
   node_parameters = local.ntc_parameters_to_write
+
+  providers = {
+    aws = aws.euc1
+  }
 }
