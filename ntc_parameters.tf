@@ -6,9 +6,7 @@ locals {
   ntc_parameters = module.ntc_parameters_reader.all_parameters
 
   # parameters that are managed by core security account
-  ntc_parameters_to_write = {
-    config_iam_role_name = module.security_tooling.config_iam_role_name
-  }
+  ntc_parameters_to_write = {}
 
   # by default existing node parameters will be merged with new parameters to avoid deleting parameters
   replace_parameters = true
