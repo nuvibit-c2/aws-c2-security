@@ -2,10 +2,10 @@
 # ¦ LOCALS
 # ---------------------------------------------------------------------------------------------------------------------
 locals {
-  # sns topic subscriptions where ALL security events will be notified
-  securityhub_sns_configuration = {
+  # get notified via sns topic about security hub findings
+  securityhub_notifications_config = {
     enabled = true
-    # only send sns notifications for findings with specific severity
+    # only notify on finding with specific severity
     severity_labels = ["HIGH", "CRITICAL"]
     subscriptions = [
       {
@@ -15,13 +15,13 @@ locals {
     ]
   }
 
-  # sns topic subscriptions where summary report of security events will be notified
-  securityhub_reports_configuration = [
+  # generate security hub reports and get notified via sns topic
+  securityhub_reports_config = [
     {
       # choose from predefined security hub reports
-      report = "security-hub-org-summary"
-      # reports can be scheduled to be generated "DAILY", "WEEKLY" or "MONTHLY"
-      schedule = "DAILY"
+      report = "securityhub-global-summary"
+      # reports can be scheduled to be generated every x days
+      schedule_in_days = 1
       subscriptions = [
         {
           protocol  = "email"
@@ -38,8 +38,8 @@ locals {
 module "security_tooling" {
   source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=beta"
 
-  securityhub_sns_configuration     = local.securityhub_sns_configuration
-  securityhub_reports_configuration = local.securityhub_reports_configuration
+  securityhub_notifications_config = local.securityhub_notifications_config
+  securityhub_reports_config       = local.securityhub_reports_config
 
   providers = {
     aws = aws.euc1
