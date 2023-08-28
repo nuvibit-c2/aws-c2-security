@@ -4,10 +4,13 @@
 locals {
   # sns topic subscriptions where ALL security events will be notified
   securityhub_sns_configuration = {
+    enabled = true
+    # only send sns notifications for findings with specific severity
+    severity_labels = ["HIGH", "CRITICAL"]
     subscriptions = [
       {
         protocol  = "email"
-        endpoints = ["jonas.saegesser@nuvibit.com"]
+        endpoints = ["stefano.franco@nuvibit.com"]
       }
     ]
   }
@@ -15,12 +18,14 @@ locals {
   # sns topic subscriptions where summary report of security events will be notified
   securityhub_reports_configuration = [
     {
-      report_name = "test-report"
-      schedule    = "DAILY"
+      # choose from predefined security hub reports
+      report = "security-hub-org-summary"
+      # reports can be scheduled to be generated "DAILY", "WEEKLY" or "MONTHLY"
+      schedule = "DAILY"
       subscriptions = [
         {
           protocol  = "email"
-          endpoints = ["jonas.saegesser@nuvibit.com"]
+          endpoints = ["stefano.franco@nuvibit.com"]
         }
       ]
     }
