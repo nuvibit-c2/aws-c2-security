@@ -2,6 +2,9 @@
 # ¦ LOCALS
 # ---------------------------------------------------------------------------------------------------------------------
 locals {
+  # descriptive name of current AWS Organization to identify for which AWS Organization the security reports are generated
+  org_name = "aws-c2"
+
   # get notified via sns topic about security hub findings
   securityhub_notifications_config = {
     enabled = true
@@ -40,6 +43,7 @@ module "security_tooling" {
 
   securityhub_notifications_config = local.securityhub_notifications_config
   securityhub_reports_config       = local.securityhub_reports_config
+  org_name                         = local.org_name
 
   providers = {
     aws = aws.euc1
