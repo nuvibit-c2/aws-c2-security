@@ -2,14 +2,16 @@
 # ¦ LOCALS
 # ---------------------------------------------------------------------------------------------------------------------
 locals {
-  # descriptive name of current AWS Organization to identify for which AWS Organization the security reports are generated
-  org_name = "aws-c2"
+  # descriptive name of current AWS Organization to identify for which AWS Organization notifications are sent
+  org_name = "c2"
 
   # get notified via sns topic about security hub findings
   securityhub_notifications_config = {
     enabled = true
+    # set to true to prettify security findings before notifying
+    prettify_findings = true
     # only notify on finding with specific severity
-    severity_labels = ["HIGH", "CRITICAL"]
+    severity_labels = ["CRITICAL"]
     subscriptions = [
       {
         protocol  = "email"
@@ -22,9 +24,9 @@ locals {
   securityhub_reports_config = [
     {
       # choose from predefined security hub reports
-      report = "securityhub-global-summary"
+      report = "securityhub-summary"
       # reports can be scheduled to be generated every x days
-      schedule_in_days = 1
+      schedule_in_days = 7
       subscriptions = [
         {
           protocol  = "email"
