@@ -8,7 +8,7 @@ locals {
   # get notified via sns topic about security hub findings
   securityhub_notifications_config = {
     enabled = false
-    # set to true to prettify security findings before notifying
+    # set to true to prettify security findings before sending notification
     prettify_findings = true
     # only notify on finding with specific severity
     severity_labels = ["CRITICAL"]
