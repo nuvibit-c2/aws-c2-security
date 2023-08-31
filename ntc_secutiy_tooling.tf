@@ -2,12 +2,11 @@
 # ¦ LOCALS
 # ---------------------------------------------------------------------------------------------------------------------
 locals {
-  # descriptive name of current AWS Organization to identify for which AWS Organization notifications are sent
-  org_name = "c2"
-
   # get notified via sns topic about security hub findings
-  securityhub_notifications_config = {
-    enabled = false
+  securityhub_notification_settings = {
+    enable_notifications = false
+    # identify for which AWS Organization notifications are sent
+    org_identifier = "c2"
     # set to true to prettify security findings before sending notification
     prettify_findings = true
     # only notify on finding with specific severity
@@ -21,7 +20,7 @@ locals {
   }
 
   # generate security hub reports and get notified via sns topic
-  securityhub_reports_config = [
+  securityhub_report_settings = [
     {
       # choose from predefined security hub reports
       report = "securityhub-summary"
@@ -43,9 +42,8 @@ locals {
 module "security_tooling" {
   source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=beta"
 
-  securityhub_notifications_config = local.securityhub_notifications_config
-  securityhub_reports_config       = local.securityhub_reports_config
-  org_name                         = local.org_name
+  securityhub_notification_settings = local.securityhub_notification_settings
+  securityhub_report_settings       = local.securityhub_report_settings
 
   providers = {
     aws = aws.euc1
