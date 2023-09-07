@@ -2,21 +2,27 @@
 # ¦ LOCALS
 # ---------------------------------------------------------------------------------------------------------------------
 locals {
+  # enrich securityhub findings with account context
+  securityhub_enrichment_settings = {
+    enable_enrichment = true
+    # to get alternate contact an assumable iam role is required in the org management account
+    alternate_contact_assume_role = ""
+  }
+
   # get notified via sns topic about security hub findings
   securityhub_notification_settings = {
     enable_notifications = false
     # identify for which AWS Organization notifications are sent
     org_identifier = "c2"
-    # set to true to prettify security findings before sending notification
-    prettify_findings = true
     # only notify on finding with specific severity
     severity_labels = ["CRITICAL"]
-    subscriptions = [
+    subscriptions_findings_pretty = [
       {
         protocol  = "email"
         endpoints = ["stefano.franco@nuvibit.com"]
       }
     ]
+    subscriptions_raw_findings = []
   }
 
   # generate security hub reports and get notified via sns topic
