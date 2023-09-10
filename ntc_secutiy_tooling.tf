@@ -6,7 +6,7 @@ locals {
   securityhub_enrichment_settings = {
     enable_enrichment = true
     # enrich only findings of specific severity from ["INFORMATIONAL", "LOW", "MEDIUM", "HIGH", "CRITICAL"]
-    severity_labels = ["HIGH", "CRITICAL"]
+    severity_labels = ["INFORMATIONAL", "LOW", "MEDIUM", "HIGH", "CRITICAL"]
     # to get alternate contact an assumable iam role is required in the org management account
     alternate_contact_assume_role = ""
   }
@@ -17,7 +17,7 @@ locals {
     # identify for which AWS Organization notifications are sent
     org_identifier = "c2"
     # prettified finding notifications for specific severities
-    severity_labels_findings_pretty = ["HIGH", "CRITICAL"]
+    severity_labels_findings_pretty = ["CRITICAL"]
     subscriptions_findings_pretty = [
       {
         protocol  = "email"
@@ -25,7 +25,7 @@ locals {
       }
     ]
     # raw json notifications for specific severities
-    severity_labels_findings_raw = ["HIGH", "CRITICAL"]
+    severity_labels_findings_raw = ["CRITICAL"]
     subscriptions_raw_findings   = []
   }
 
