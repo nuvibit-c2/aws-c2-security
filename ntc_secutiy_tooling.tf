@@ -27,6 +27,14 @@ locals {
     # raw json notifications for specific severities
     severity_labels_findings_raw = ["HIGH", "CRITICAL"]
     subscriptions_raw_findings   = []
+    # define how frequent reminders for findings should be sent
+    reminder_x_days_unresolved_by_severity = {
+      critical      = 3 # default is 1
+      high          = 3
+      medium        = 7
+      low           = 14
+      informational = 14
+    }
   }
 
   # generate security hub reports and get notified via sns topic
