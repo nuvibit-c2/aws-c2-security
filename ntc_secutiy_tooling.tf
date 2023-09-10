@@ -25,7 +25,7 @@ locals {
       }
     ]
     # raw json notifications for specific severities
-    severity_labels_findings_raw = ["CRITICAL"]
+    severity_labels_findings_raw = ["HIGH", "CRITICAL"]
     subscriptions_raw_findings   = []
   }
 
