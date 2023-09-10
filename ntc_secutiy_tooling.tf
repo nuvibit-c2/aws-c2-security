@@ -13,7 +13,7 @@ locals {
 
   # get notified via sns topic about security hub findings
   securityhub_notification_settings = {
-    enable_notifications = false
+    enable_notifications = true
     # identify for which AWS Organization notifications are sent
     org_identifier = "c2"
     # prettified finding notifications for specific severities
