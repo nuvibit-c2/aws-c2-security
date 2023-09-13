@@ -58,7 +58,7 @@ locals {
 # ¦ NTC SECURITY TOOLING
 # ---------------------------------------------------------------------------------------------------------------------
 module "security_tooling" {
-  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=beta"
+  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.0.0"
 
   securityhub_enrichment_settings   = local.securityhub_enrichment_settings
   securityhub_notification_settings = local.securityhub_notification_settings
