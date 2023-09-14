@@ -25,7 +25,7 @@ locals {
       }
     ]
     # raw json notifications for specific severities
-    severity_labels_findings_raw = ["HIGH", "CRITICAL"]
+    severity_labels_findings_raw = ["CRITICAL"]
     subscriptions_raw_findings   = []
     # define how frequent reminders for findings should be sent
     reminder_x_days_unresolved_by_severity = {
@@ -58,7 +58,7 @@ locals {
 # ¦ NTC SECURITY TOOLING
 # ---------------------------------------------------------------------------------------------------------------------
 module "security_tooling" {
-  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.0.0"
+  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.0.1"
 
   securityhub_enrichment_settings   = local.securityhub_enrichment_settings
   securityhub_notification_settings = local.securityhub_notification_settings
