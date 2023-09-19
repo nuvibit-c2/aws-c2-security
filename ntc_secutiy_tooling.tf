@@ -8,7 +8,7 @@ locals {
     # enrich only findings of specific severity from ["INFORMATIONAL", "LOW", "MEDIUM", "HIGH", "CRITICAL"]
     severity_labels = ["INFORMATIONAL", "LOW", "MEDIUM", "HIGH", "CRITICAL"]
     # to get alternate contact an assumable iam role is required in the org management account
-    alternate_contact_assume_role = ""
+    alternate_contact_assume_role = "ntc-org-account-reader"
   }
 
   # get notified via sns topic about security hub findings
@@ -58,7 +58,7 @@ locals {
 # ¦ NTC SECURITY TOOLING
 # ---------------------------------------------------------------------------------------------------------------------
 module "security_tooling" {
-  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.0.1"
+  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.0.2"
 
   securityhub_enrichment_settings   = local.securityhub_enrichment_settings
   securityhub_notification_settings = local.securityhub_notification_settings
