@@ -19,10 +19,10 @@ locals {
     # prettified finding notifications for specific severities
     severity_labels_findings_pretty = ["CRITICAL"]
     subscriptions_findings_pretty = [
-      {
-        protocol  = "email"
-        endpoints = []
-      }
+      # {
+      #   protocol  = "email"
+      #   endpoints = ["stefano.franco@nuvibit.com"]
+      # }
     ]
     # raw json notifications for specific severities
     severity_labels_findings_raw = ["CRITICAL"]
