@@ -21,7 +21,7 @@ locals {
     subscriptions_findings_pretty = [
       {
         protocol  = "email"
-        endpoints = ["stefano.franco@nuvibit.com"]
+        endpoints = []
       }
     ]
     # raw json notifications for specific severities
@@ -29,7 +29,7 @@ locals {
     subscriptions_raw_findings   = []
     # define how frequent reminders for findings should be sent
     reminder_x_days_unresolved_by_severity = {
-      critical      = 3 # default is 1
+      critical      = 1
       high          = 3
       medium        = 7
       low           = 14
