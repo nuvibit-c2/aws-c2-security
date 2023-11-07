@@ -1,7 +1,9 @@
 # ---------------------------------------------------------------------------------------------------------------------
-# ¦ LOCALS
+# ¦ NTC SECURITY TOOLING
 # ---------------------------------------------------------------------------------------------------------------------
-locals {
+module "security_tooling" {
+  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.0.2"
+
   # enrich securityhub findings with account context
   securityhub_enrichment_settings = {
     enable_enrichment = true
@@ -52,17 +54,6 @@ locals {
       ]
     }
   ]
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
-# ¦ NTC SECURITY TOOLING
-# ---------------------------------------------------------------------------------------------------------------------
-module "security_tooling" {
-  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.0.2"
-
-  securityhub_enrichment_settings   = local.securityhub_enrichment_settings
-  securityhub_notification_settings = local.securityhub_notification_settings
-  securityhub_report_settings       = local.securityhub_report_settings
 
   providers = {
     aws = aws.euc1
