@@ -55,6 +55,11 @@ module "security_tooling" {
     }
   ]
 
+  securityhub_processing_settings = {
+    enable_processing = true
+    automation_rules  = jsondecode(file("${path.module}/example_automation_rules.json"))
+  }
+
   providers = {
     aws = aws.euc1
   }
