@@ -57,6 +57,9 @@ module "security_tooling" {
 
   securityhub_processing_settings = {
     enable_processing = true
+    # uses the security hub automation rules and asff syntax
+    # https://docs.aws.amazon.com/securityhub/latest/userguide/automation-rules.html#automation-rules-criteria-actions
+    # https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-findings-format-syntax.html
     automation_rules  = jsondecode(file("${path.module}/example_automation_rules.json"))
   }
 

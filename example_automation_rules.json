@@ -1,86 +1,112 @@
-[{
-    "IsTerminal": true,
-    "RuleName": "",
-    "RuleOrder": 2,
-    "RuleStatus": "ENABLED",
-    "Description": "supresss Athena primary workgroup finding",
-    "Criteria": {
-        "ProductName": [{
-            "Value": "Security Hub",
-            "Comparison": "EQUALS"
-        }],
-        "ComplianceStatus": [{
-            "Value": "FAILED",
-            "Comparison": "EQUALS"
-        }],
-        "RecordState": [{
-            "Value": "ACTIVE",
-            "Comparison": "EQUALS"
-        }],
-        "SeverityLabel": [{
-            "Value": "MEDIUM",
-            "Comparison": "EQUALS"
-        }],
-        "Title": [{
-            "Value": "Athena workgroups",
-            "Comparison": "PREFIX"
-        }]
-    },
-    "Actions": [{
-        "Type": "FINDING_FIELDS_UPDATE",
-        "FindingFieldsUpdate": {
-            "Workflow": {
-                "Status": "SUPPRESSED"
-            },
-            "Note": {
-                "Text": "The primary group is allways unencrypted",
-                "UpdatedBy": "sechub-automation"
+[
+    {
+        "IsTerminal": true,
+        "RuleName": "RULE-SEVERITY-MFA",
+        "RuleOrder": 1,
+        "RuleStatus": "ENABLED",
+        "Description": "example rule",
+        "Criteria": {
+            "ProductName": [
+                {
+                    "Value": "Security Hub",
+                    "Comparison": "EQUALS"
+                }
+            ],
+            "ComplianceStatus": [
+                {
+                    "Value": "FAILED",
+                    "Comparison": "EQUALS"
+                }
+            ],
+            "RecordState": [
+                {
+                    "Value": "ACTIVE",
+                    "Comparison": "EQUALS"
+                }
+            ],
+            "SeverityLabel": [
+                {
+                    "Value": "CRITICAL",
+                    "Comparison": "EQUALS"
+                }
+            ],
+            "Title": [
+                {
+                    "Value": "MFA should be",
+                    "Comparison": "CONTAINS"
+                }
+            ],
+            "LastObservedAt": [
+                {
+                    "Value": "{\"Unit\": \"DAYS\",\"Value\": 30}",
+                    "Comparison": "DateRange"
+                }
+            ]
+        },
+        "Actions": [
+            {
+                "Type": "FINDING_FIELDS_UPDATE",
+                "FindingFieldsUpdate": {
+                    "Severity": {
+                        "Label": "MEDIUM"
+                    },
+                    "Note": {
+                        "Text": "RULE-SEVERITY-MFA | MFA is not that important on testing environment"
+                    }
+                }
             }
-        }
-    }]
-},
-{
-    "IsTerminal": true,
-    "RuleName": "",
-    "RuleOrder": 1,
-    "RuleStatus": "ENABLED",
-    "Description": "example rule",
-    "Criteria": {
-        "ProductName": [{
-            "Value": "Security Hub",
-            "Comparison": "EQUALS"
-        }],
-        "ComplianceStatus": [{
-            "Value": "FAILED",
-            "Comparison": "EQUALS"
-        }],
-        "RecordState": [{
-            "Value": "ACTIVE",
-            "Comparison": "EQUALS"
-        }],
-        "SeverityLabel": [{
-            "Value": "CRITICAL",
-            "Comparison": "EQUALS"
-        }],
-        "Title": [{
-            "Value": "MFA should be",
-            "Comparison": "CONTAINS"
-        }],
-        "LastObservedAt": [{
-            "Value": "{\"Unit\": \"DAYS\",\"Value\": 30}",
-            "Comparison": "DateRange"
-        }]
+        ]
     },
-    "Actions": [{
-        "Type": "FINDING_FIELDS_UPDATE",
-        "FindingFieldsUpdate": {
-            "Severity": {
-                "Label": "MEDIUM"
-            },
-            "Note": {
-                "Text": "MFA is not that important on testing environment",
-                "UpdatedBy": "sechub-automation"
+    {
+        "IsTerminal": true,
+        "RuleName": "RULE-SUPPRESS-ATHENA",
+        "RuleOrder": 2,
+        "RuleStatus": "ENABLED",
+        "Description": "suppress Athena primary workgroup finding",
+        "Criteria": {
+            "ProductName": [
+                {
+                    "Value": "Security Hub",
+                    "Comparison": "EQUALS"
+                }
+            ],
+            "ComplianceStatus": [
+                {
+                    "Value": "FAILED",
+                    "Comparison": "EQUALS"
+                }
+            ],
+            "RecordState": [
+                {
+                    "Value": "ACTIVE",
+                    "Comparison": "EQUALS"
+                }
+            ],
+            "SeverityLabel": [
+                {
+                    "Value": "MEDIUM",
+                    "Comparison": "EQUALS"
+                }
+            ],
+            "Title": [
+                {
+                    "Value": "Athena workgroups",
+                    "Comparison": "PREFIX"
+                }
+            ]
+        },
+        "Actions": [
+            {
+                "Type": "FINDING_FIELDS_UPDATE",
+                "FindingFieldsUpdate": {
+                    "Workflow": {
+                        "Status": "SUPPRESSED"
+                    },
+                    "Note": {
+                        "Text": "RULE-SUPPRESS-ATHENA | The primary group is always unencrypted"
+                    }
+                }
             }
-        }
-    }]
-}]
+        ]
+    }
+]
