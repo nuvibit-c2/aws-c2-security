@@ -2,7 +2,7 @@
 # ¦ NTC SECURITY TOOLING
 # ---------------------------------------------------------------------------------------------------------------------
 module "security_tooling" {
-  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.0.2"
+  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.1.0"
 
   # enrich securityhub findings with account context
   securityhub_enrichment_settings = {
@@ -54,6 +54,14 @@ module "security_tooling" {
       ]
     }
   ]
+
+  securityhub_processing_settings = {
+    enable_processing = true
+    # uses the security hub automation rules and asff syntax
+    # https://docs.aws.amazon.com/securityhub/latest/userguide/automation-rules.html#automation-rules-criteria-actions
+    # https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-findings-format-syntax.html
+    automation_rules = jsondecode(file("${path.module}/example_automation_rules.json"))
+  }
 
   providers = {
     aws = aws.euc1
