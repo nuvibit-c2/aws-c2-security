@@ -2,7 +2,7 @@
 # ¦ NTC SECURITY TOOLING
 # ---------------------------------------------------------------------------------------------------------------------
 module "security_tooling" {
-  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.1.0"
+  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.1.1"
 
   # enrich securityhub findings with account context
   securityhub_enrichment_settings = {
