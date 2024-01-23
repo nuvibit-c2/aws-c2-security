@@ -34,6 +34,7 @@ module "ntc_parameters_writer" {
   bucket_name     = local.ntc_parameters_bucket_name
   parameter_node  = local.ntc_parameters_writer_node
   node_parameters = local.ntc_parameters_to_write
+  replace_parameters = local.ntc_parameters_replace
 
   providers = {
     aws = aws.euc1
