@@ -6,7 +6,7 @@ locals {
   ntc_parameters_to_write = {}
 
   # by default existing node parameters will be merged with new parameters to avoid deleting parameters
-  replace_parameters = true
+  ntc_replace_parameters = true
 
   # map of parameters merged from all parameter nodes
   ntc_parameters = module.ntc_parameters_reader.all_parameters
@@ -34,7 +34,7 @@ module "ntc_parameters_writer" {
   bucket_name        = local.ntc_parameters_bucket_name
   parameter_node     = local.ntc_parameters_writer_node
   node_parameters    = local.ntc_parameters_to_write
-  replace_parameters = local.ntc_parameters_replace
+  replace_parameters = local.ntc_replace_parameters
 
   providers = {
     aws = aws.euc1
