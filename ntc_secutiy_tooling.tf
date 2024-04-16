@@ -31,6 +31,7 @@ module "security_tooling" {
     #     severity = ["HIGH"]
     #   }
     # ]
+
     subscriptions_findings_pretty = [
       # {
       #   protocol  = "email"
