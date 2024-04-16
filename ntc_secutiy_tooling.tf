@@ -20,6 +20,17 @@ module "security_tooling" {
     org_identifier = "c2"
     # prettified finding notifications for specific severities
     severity_labels_findings_pretty = ["CRITICAL"]
+    # TODO: if product not defined go to fallback
+    severity_labels_by_product_findings_pretty = [
+      {
+        product  = "security_hub"
+        severity = ["CRITICAL"]
+      },
+      {
+        product  = "guard_duty"
+        severity = ["HIGH"]
+      }
+    ]
     subscriptions_findings_pretty = [
       # {
       #   protocol  = "email"
@@ -31,6 +42,7 @@ module "security_tooling" {
     subscriptions_raw_findings   = []
     # define how frequent reminders for findings should be sent
     reminder_x_days_unresolved_by_severity = {
+      # TODO: add option to disable reminders? e.g. null
       critical      = 1
       high          = 3
       medium        = 7
