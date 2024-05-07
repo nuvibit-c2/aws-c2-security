@@ -2,7 +2,8 @@
 # ¦ NTC SECURITY TOOLING
 # ---------------------------------------------------------------------------------------------------------------------
 module "security_tooling" {
-  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.1.2"
+  # source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.1.2"
+  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=feat-central-sechub"
 
   # enrich securityhub findings with account context
   securityhub_enrichment_settings = {
@@ -75,6 +76,61 @@ module "security_tooling" {
     # https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-findings-format-syntax.html
     automation_rules = jsondecode(file("${path.module}/example_automation_rules.json"))
   }
+
+  # securityhub aggregration is required for central configuration
+  enable_securityhub_central_configuration = true
+  enable_securityhub_aggregation           = true
+  # can be either "ALL_REGIONS" or a list of regions which should be aggregated
+  securityhub_aggregation_regions = ["ALL_REGIONS"]
+
+  # define securityhub central configuration policies
+  # https://docs.aws.amazon.com/securityhub/latest/userguide/central-configuration-intro.html
+  securityhub_central_configuration_polices = [
+    {
+      name        = "ntc-securityhub-central-policy-root-ou"
+      description = "securityhub central policy which targets all accounts in organization"
+      # enable or disable securityhub in target accounts
+      enable_securityhub = true
+      # policy target can either be a organizational unit (OU) or an account (ID)
+      policy_targets = [
+        # use /root as target to apply policy to all accounts in organization
+        local.ntc_parameters["mgmt-organizations"]["ou_ids"]["/root"]
+      ]
+      enabled_standards = [
+        "aws-foundational-security-best-practices/v/1.0.0",
+        "cis-aws-foundations-benchmark/v/1.2.0",
+        # "cis-aws-foundations-benchmark/v/1.4.0",
+        # "nist-800-53/v/5.0.0",
+        # "pci-dss/v/3.2.1",
+      ]
+      # either provide a list of control ids which should be enabled (all other existing and future controls will be disabled)
+      enabled_control_ids = []
+      # or a list of control ids which should be disabled (all other existing and future controls will be enabled)
+      # https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-controls-reference.html
+      disabled_control_ids = [
+        "IAM.9",    # "MFA should be enabled for the root user"
+        "IAM.18",   # "Ensure a support role has been created to manage incidents with AWS Support"
+        "Config.1", # "AWS Config should be enabled"
+        "EC2.10",   # "Security groups should not allow ingress from 0.0.0.0/0 or ::/0 to port 22"
+        "IAM.6",    # "Hardware MFA should be enabled for the root user"
+        "S3.1"      # "S3 general purpose buckets should have block public access settings enabled"
+      ]
+      # some controls allow to customize parameters
+      # https://docs.aws.amazon.com/securityhub/latest/userguide/custom-control-parameters.html
+      security_control_custom_parameter = [
+        {
+          control_id = "IAM.7"
+          custom_parameters = [
+            {
+              name  = "MaxPasswordAge"
+              value = 60
+              type  = "int"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 
   providers = {
     aws = aws.euc1
