@@ -101,6 +101,8 @@ module "security_tooling" {
         # local.ntc_parameters["mgmt-organizations"]["ou_ids"]["/root/sandbox"],
         # local.ntc_parameters["mgmt-organizations"]["ou_ids"]["/root/suspended"],
         # local.ntc_parameters["mgmt-organizations"]["ou_ids"]["/root/decommission"],
+        # to apply policy to all accounts in organization use /root parent ou as target
+        # local.ntc_parameters["mgmt-organizations"]["ou_ids"]["/root"]
       ]
       enabled_standards = [
         "aws-foundational-security-best-practices/v/1.0.0",
