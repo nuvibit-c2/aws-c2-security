@@ -125,6 +125,7 @@ module "security_tooling" {
       ]
       # some controls allow to customize parameters
       # https://docs.aws.amazon.com/securityhub/latest/userguide/custom-control-parameters.html
+      # https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-controls-reference.html
       customized_security_controls = [
         {
           control_id = "IAM.7"
@@ -132,7 +133,12 @@ module "security_tooling" {
             {
               name  = "MaxPasswordAge"
               value = 60
-              type  = "int"
+              type  = "Integer"
+            },
+            {
+              name  = "RequireNumbers"
+              value = false
+              type  = "Boolean"
             }
           ]
         }
