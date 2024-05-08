@@ -87,14 +87,20 @@ module "security_tooling" {
   # https://docs.aws.amazon.com/securityhub/latest/userguide/central-configuration-intro.html
   securityhub_central_configuration_polices = [
     {
-      name        = "ntc-securityhub-central-policy-root-ou"
-      description = "securityhub central policy which targets all accounts in organization"
+      name        = "ntc-securityhub-central-policy"
+      description = "securityhub central policy"
       # enable or disable securityhub in target accounts
       enable_securityhub = true
-      # policy target can either be a organizational unit (OU) or an account (ID)
+      # policy targets can either be organizational units (OU) or aws accounts (ID)
       policy_targets = [
-        # use /root as target to apply policy to all accounts in organization
-        local.ntc_parameters["mgmt-organizations"]["ou_ids"]["/root"]
+        local.ntc_parameters["mgmt-account-factory"]["core_accounts"]["aws-c2-management"],
+        local.ntc_parameters["mgmt-organizations"]["ou_ids"]["/root/infrastructure"],
+        local.ntc_parameters["mgmt-organizations"]["ou_ids"]["/root/security"],
+        local.ntc_parameters["mgmt-organizations"]["ou_ids"]["/root/workloads"],
+        # policy will not be rolled out to sandbox accounts and to suspended or decommissioned accounts
+        # local.ntc_parameters["mgmt-organizations"]["ou_ids"]["/root/sandbox"],
+        # local.ntc_parameters["mgmt-organizations"]["ou_ids"]["/root/suspended"],
+        # local.ntc_parameters["mgmt-organizations"]["ou_ids"]["/root/decommission"],
       ]
       enabled_standards = [
         "aws-foundational-security-best-practices/v/1.0.0",
