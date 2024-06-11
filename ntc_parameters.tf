@@ -1,6 +1,6 @@
 locals {
   ntc_parameters_bucket_name = "aws-c2-ntc-parameters"
-  ntc_parameters_writer_node = "security"
+  ntc_parameters_writer_node = "security-tooling"
 
   # parameters that are managed by core security account
   ntc_parameters_to_write = {}
