@@ -106,7 +106,8 @@ module "security_tooling" {
       ]
       enabled_standards = [
         "aws-foundational-security-best-practices/v/1.0.0",
-        "cis-aws-foundations-benchmark/v/1.2.0",
+        "cis-aws-foundations-benchmark/v/3.0.0",
+        # "cis-aws-foundations-benchmark/v/1.2.0",
         # "cis-aws-foundations-benchmark/v/1.4.0",
         # "nist-800-53/v/5.0.0",
         # "pci-dss/v/3.2.1",
