@@ -2,6 +2,8 @@
 # ¦ NTC SECURITY TOOLING
 # ---------------------------------------------------------------------------------------------------------------------
 module "security_tooling" {
+  count = 0
+  
   # source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.1.2"
   source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=feat-central-sechub"
 
