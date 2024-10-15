@@ -3,6 +3,11 @@
 # ---------------------------------------------------------------------------------------------------------------------
 module "ntc_security_tooling" {
   source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.2.0"
+  
+  # aggregate config data from all accounts in all regions across organizations
+  # admin delegation for "config.amazonaws.com" required
+  # https://docs.aws.amazon.com/config/latest/developerguide/aggregate-data.html
+  enable_config_aggregation = true
 
   # enrich securityhub findings with account context
   securityhub_enrichment_settings = {
