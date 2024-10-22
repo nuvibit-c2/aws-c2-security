@@ -3,7 +3,7 @@
 # ---------------------------------------------------------------------------------------------------------------------
 module "ntc_security_tooling" {
   source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.2.0"
-  
+
   # aggregate config data from all accounts in all regions across organizations
   # admin delegation for "config.amazonaws.com" required
   # https://docs.aws.amazon.com/config/latest/developerguide/aggregate-data.html
@@ -142,6 +142,28 @@ module "ntc_security_tooling" {
     # WARNING some features of security tooling cannot be provisioned in an opt-in region
     # e.g security hub aggregation does not supported an opt-in region as main region
     # https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-regions.html
+    aws = aws.euc1
+  }
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# ¦ NTC SECURITY TOOLING - REGIONAL CONFIG
+# ---------------------------------------------------------------------------------------------------------------------
+module "ntc_regional_security_config_euc1" {
+  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=feat-regional-security-config"
+
+  # https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_regions.html
+  guardduty_config = {
+    enabled                          = true
+    admin_delegation_enabled         = false
+    auto_enable_organization_members = true
+    # TODO: test what happens in regions where not all settings are supported
+    enable_s3_logs                        = true
+    enable_kubernetes_audit_logs          = true
+    enable_malware_protection_ebs_volumes = true
+  }
+
+  providers = {
     aws = aws.euc1
   }
 }
