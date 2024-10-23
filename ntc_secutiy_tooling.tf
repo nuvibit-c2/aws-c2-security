@@ -151,7 +151,7 @@ module "ntc_security_tooling" {
 # ¦ NTC SECURITY TOOLING - REGIONAL CONFIG
 # ---------------------------------------------------------------------------------------------------------------------
 module "ntc_regional_security_config_euc1" {
-  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=feat-regional-security-config"
+  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling//modules/regional-security-config?ref=feat-regional-security-config"
 
   # https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_regions.html
   guardduty_config = {
