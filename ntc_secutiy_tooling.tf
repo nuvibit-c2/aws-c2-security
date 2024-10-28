@@ -157,11 +157,66 @@ module "ntc_regional_security_config_euc1" {
   guardduty_config = {
     enabled                          = true
     admin_delegation_enabled         = false
-    auto_enable_organization_members = true
-    # TODO: test what happens in regions where not all settings are supported
-    enable_s3_logs                        = true
-    enable_kubernetes_audit_logs          = true
-    enable_malware_protection_ebs_volumes = true
+    finding_publishing_frequency     = "SIX_HOURS"
+    auto_enable_organization_members = "ALL"
+    features = [
+      {
+        auto_enable = "ALL"
+        name        = "S3_DATA_EVENTS"
+      },
+      {
+        auto_enable = "ALL"
+        name        = "EBS_MALWARE_PROTECTION"
+      },
+      {
+        auto_enable = "ALL"
+        name        = "RDS_LOGIN_EVENTS"
+      },
+      {
+        auto_enable = "ALL"
+        name        = "LAMBDA_NETWORK_LOGS"
+      },
+      {
+        auto_enable = "NONE"
+        name        = "EKS_AUDIT_LOGS"
+      },
+      {
+        auto_enable = "ALL"
+        name        = "RUNTIME_MONITORING"
+        additional_configuration = [
+          {
+            auto_enable = "NONE"
+            name        = "EKS_ADDON_MANAGEMENT"
+          },
+          {
+            auto_enable = "ALL"
+            name        = "ECS_FARGATE_AGENT_MANAGEMENT"
+          },
+          {
+            auto_enable = "ALL"
+            name        = "EC2_AGENT_MANAGEMENT"
+          }
+        ]
+      }
+    ]
+    # (optional) export all guardduty findings to s3 log archive
+    export_findings         = true
+    og_archive_bucket_arn   = local.ntc_parameters["log-archive"]["log_bucket_arns"]["guardduty"]
+    log_archive_kms_key_arn = local.ntc_parameters["log-archive"]["log_bucket_kms_key_arns"]["guardduty"]
+    # (optional) invite existing organization members to guardduty
+    invite_members_by_acccount_id = []
+  }
+
+  inspector2_config = {
+    enabled                          = true
+    admin_delegation_enabled         = true
+    auto_enable_organization_members = "ALL"
+    ec2_scans                        = true
+    ecr_scans                        = true
+    lambda_scans                     = true
+    lambda_code_scans                = true
+    # (optional) invite existing organization members to inspector
+    invite_members_by_acccount_id = []
   }
 
   providers = {
