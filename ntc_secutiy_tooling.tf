@@ -5,7 +5,7 @@ module "ntc_security_tooling" {
   # source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.2.0"
   source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=feat-regional-security-config"
 
-  # aggregate config data from all accounts in all regions across organizations
+  # (optional) aggregate config data from all accounts in all regions across organizations
   # admin delegation for "config.amazonaws.com" required
   # https://docs.aws.amazon.com/config/latest/developerguide/aggregate-data.html
   enable_config_aggregation = true
@@ -99,8 +99,9 @@ module "ntc_security_tooling" {
       ]
       enabled_standards = [
         "aws-foundational-security-best-practices/v/1.0.0",
-        "cis-aws-foundations-benchmark/v/1.2.0",
+        "cis-aws-foundations-benchmark/v/3.0.0",
         # "cis-aws-foundations-benchmark/v/1.4.0",
+        # "cis-aws-foundations-benchmark/v/1.2.0",
         # "nist-800-53/v/5.0.0",
         # "pci-dss/v/3.2.1",
       ]

@@ -9,7 +9,7 @@ import {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# ¦ NTC SECURITY TOOLING - REGIONAL CONFIGURATION
+# ¦ NTC SECURITY TOOLING - REGIONAL CONFIGURATION - FRANKFURT
 # ---------------------------------------------------------------------------------------------------------------------
 module "ntc_regional_security_config_euc1" {
   source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling//modules/regional-security-config?ref=feat-regional-security-config"
