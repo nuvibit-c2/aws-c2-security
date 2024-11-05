@@ -21,9 +21,9 @@ module "ntc_regional_security_config_euc1" {
 
     # WARNING: requires admin delegation of 'guardduty.amazonaws.com'
     organization_config = {
-      # enable guardduty in organization for 'ALL', 'NEW' or 'NONE'
+      # enable guardduty in organization for 'ALL' members, 'NEW' members or 'NONE'
       auto_enable = "ALL"
-      # individual features can be enabled in organization for 'ALL', 'NEW' or 'NONE'
+      # individual features can be enabled in organization for 'ALL' members, 'NEW' members or 'NONE'
       # enabled features will also be configured for current account
       features = [
         {
@@ -83,7 +83,7 @@ module "ntc_regional_security_config_euc1" {
     # WARNING: requires admin delegation of 'inspector2.amazonaws.com'
     organization_config = {
       auto_enable = true
-      # individual features can be enabled in organization for 'NEW' or 'NONE'
+      # individual features can be enabled in organization for 'NEW' members or 'NONE'
       # WARNING: features cannot be enabled for 'ALL' members (inspector limitation)
       # enabled features will also be configured for current account
       features = [
