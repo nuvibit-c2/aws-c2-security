@@ -130,15 +130,15 @@ locals {
   additional_configuration = [
     {
       name = "EKS_ADDON_MANAGEMENT",
-      auto_enable = "ALL"
+      auto_enable = "NEW"
     },
     {
       name = "ECS_FARGATE_AGENT_MANAGEMENT",
-      auto_enable = "ALL"
+      auto_enable = "NEW"
     },
     {
       name = "EC2_AGENT_MANAGEMENT",
-      auto_enable = "ALL"
+      auto_enable = "NEW"
     }
   ]
 }
@@ -233,7 +233,7 @@ resource "aws_guardduty_organization_configuration_feature" "debug" {
   #     auto_enable = "NEW"
   #   }
   # }
-  
+
   lifecycle {
     ignore_changes = [
       additional_configuration["EKS_ADDON_MANAGEMENT"].name,
