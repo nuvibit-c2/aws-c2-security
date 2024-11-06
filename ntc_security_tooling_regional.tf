@@ -127,75 +127,104 @@ data "aws_guardduty_detector" "euc2" {
 }
 
 locals {
-  features = [
-    "EKS_ADDON_MANAGEMENT", 
-    "ECS_FARGATE_AGENT_MANAGEMENT", 
-    "EC2_AGENT_MANAGEMENT",
+  additional_configuration = [
+    {
+      name = "EKS_ADDON_MANAGEMENT",
+      auto_enable = "ALL"
+    },
+    {
+      name = "ECS_FARGATE_AGENT_MANAGEMENT",
+      auto_enable = "ALL"
+    },
+    {
+      name = "EC2_AGENT_MANAGEMENT",
+      auto_enable = "ALL"
+    }
   ]
 }
 
 
-resource "aws_guardduty_detector_feature" "debug" {
-  detector_id = data.aws_guardduty_detector.euc2.id
-  name        = "RUNTIME_MONITORING"
-  status      = "ENABLED"
+# resource "aws_guardduty_detector_feature" "debug" {
+#   detector_id = data.aws_guardduty_detector.euc2.id
+#   name        = "RUNTIME_MONITORING"
+#   status      = "ENABLED"
 
-  dynamic "additional_configuration" {
-    for_each = contains(local.features, "EKS_ADDON_MANAGEMENT") ? ["true"] : []
-    content {
-      name   = "EKS_ADDON_MANAGEMENT"
-      status = "ENABLED"
-    }
-  }
+#   dynamic "additional_configuration" {
+#     for_each = {
+#       for configuration in local.additional_configuration : configuration.name => configuration
+#     }
+#     content {
+#       name   = additional_configuration.value.name
+#       status = additional_configuration.value.auto_enable == "NONE" ? "DISABLED" : "ENABLED"
+#     }
+#   }
 
-  dynamic "additional_configuration" {
-    for_each = contains(local.features, "ECS_FARGATE_AGENT_MANAGEMENT") ? ["true"] : []
-    content {
-      name   = "ECS_FARGATE_AGENT_MANAGEMENT"
-      status = "ENABLED"
-    }
-  }
+#   # dynamic "additional_configuration" {
+#   #   for_each = contains(local.features[*].name, "EKS_ADDON_MANAGEMENT") ? ["true"] : []
+#   #   content {
+#   #     name   = "EKS_ADDON_MANAGEMENT"
+#   #     status = "ENABLED"
+#   #   }
+#   # }
 
-  dynamic "additional_configuration" {
-    for_each = contains(local.features, "EC2_AGENT_MANAGEMENT") ? ["true"] : []
-    content {
-      name   = "EC2_AGENT_MANAGEMENT"
-      status = "ENABLED"
-    }
-  }
+#   # dynamic "additional_configuration" {
+#   #   for_each = contains(local.features[*].name, "ECS_FARGATE_AGENT_MANAGEMENT") ? ["true"] : []
+#   #   content {
+#   #     name   = "ECS_FARGATE_AGENT_MANAGEMENT"
+#   #     status = "ENABLED"
+#   #   }
+#   # }
 
-  provider = aws.euc2
-}
+#   # dynamic "additional_configuration" {
+#   #   for_each = contains(local.features[*].name, "EC2_AGENT_MANAGEMENT") ? ["true"] : []
+#   #   content {
+#   #     name   = "EC2_AGENT_MANAGEMENT"
+#   #     status = "ENABLED"
+#   #   }
+#   # }
+
+#   provider = aws.euc2
+# }
 
 
-resource "aws_guardduty_organization_configuration_feature" "debug" {
-  detector_id = data.aws_guardduty_detector.euc2.id
-  name        = "RUNTIME_MONITORING"
-  auto_enable = "NEW"
+# resource "aws_guardduty_organization_configuration_feature" "debug" {
+#   detector_id = data.aws_guardduty_detector.euc2.id
+#   name        = "RUNTIME_MONITORING"
+#   auto_enable = "NEW"
 
-  dynamic "additional_configuration" {
-    for_each = contains(local.features, "EKS_ADDON_MANAGEMENT") ? ["true"] : []
-    content {
-      name   = "EKS_ADDON_MANAGEMENT"
-      auto_enable = "NEW"
-    }
-  }
+#   dynamic "additional_configuration" {
+#     for_each = {
+#       for configuration in local.additional_configuration : configuration.name => configuration
+#     }
+#     content {
+#       name   = additional_configuration.value.name
+#       auto_enable = additional_configuration.value.auto_enable
+#     }
+#   }
 
-  dynamic "additional_configuration" {
-    for_each = contains(local.features, "ECS_FARGATE_AGENT_MANAGEMENT") ? ["true"] : []
-    content {
-      name   = "ECS_FARGATE_AGENT_MANAGEMENT"
-      auto_enable = "NEW"
-    }
-  }
+#   # dynamic "additional_configuration" {
+#   #   for_each = contains(local.features[*].name, "ECS_FARGATE_AGENT_MANAGEMENT") ? ["true"] : []
+#   #   content {
+#   #     name   = "ECS_FARGATE_AGENT_MANAGEMENT"
+#   #     auto_enable = "NEW"
+#   #   }
+#   # }
 
-  dynamic "additional_configuration" {
-    for_each = contains(local.features, "EC2_AGENT_MANAGEMENT") ? ["true"] : []
-    content {
-      name   = "EC2_AGENT_MANAGEMENT"
-      auto_enable = "NEW"
-    }
-  }
+#   # dynamic "additional_configuration" {
+#   #   for_each = contains(local.features[*].name, "EC2_AGENT_MANAGEMENT") ? ["true"] : []
+#   #   content {
+#   #     name   = "EC2_AGENT_MANAGEMENT"
+#   #     auto_enable = "NEW"
+#   #   }
+#   # }
 
-  provider = aws.euc2
-}
+#   # dynamic "additional_configuration" {
+#   #   for_each = contains(local.features[*].name, "EKS_ADDON_MANAGEMENT") ? ["true"] : []
+#   #   content {
+#   #     name   = "EKS_ADDON_MANAGEMENT"
+#   #     auto_enable = "NEW"
+#   #   }
+#   # }
+
+#   provider = aws.euc2
+# }
