@@ -126,18 +126,74 @@ data "aws_guardduty_detector" "euc2" {
   provider = aws.euc2
 }
 
-resource "aws_guardduty_detector_feature" "ntc_guardduty" {
+locals {
+  features = [
+    "EKS_ADDON_MANAGEMENT", 
+    "ECS_FARGATE_AGENT_MANAGEMENT", 
+    "EC2_AGENT_MANAGEMENT",
+  ]
+}
+
+
+resource "aws_guardduty_detector_feature" "debug" {
   detector_id = data.aws_guardduty_detector.euc2.id
   name        = "RUNTIME_MONITORING"
   status      = "ENABLED"
 
   dynamic "additional_configuration" {
-    for_each = {
-      for configuration in ["EKS_ADDON_MANAGEMENT", "ECS_FARGATE_AGENT_MANAGEMENT", "EC2_AGENT_MANAGEMENT"] : configuration => configuration
-    }
+    for_each = contains(local.features, "EKS_ADDON_MANAGEMENT") ? ["true"] : []
     content {
-      name   = additional_configuration.value
+      name   = "EKS_ADDON_MANAGEMENT"
       status = "ENABLED"
+    }
+  }
+
+  dynamic "additional_configuration" {
+    for_each = contains(local.features, "ECS_FARGATE_AGENT_MANAGEMENT") ? ["true"] : []
+    content {
+      name   = "ECS_FARGATE_AGENT_MANAGEMENT"
+      status = "ENABLED"
+    }
+  }
+
+  dynamic "additional_configuration" {
+    for_each = contains(local.features, "EC2_AGENT_MANAGEMENT") ? ["true"] : []
+    content {
+      name   = "EC2_AGENT_MANAGEMENT"
+      status = "ENABLED"
+    }
+  }
+
+  provider = aws.euc2
+}
+
+
+resource "aws_guardduty_organization_configuration_feature" "debug" {
+  detector_id = data.aws_guardduty_detector.euc2.id
+  name        = "RUNTIME_MONITORING"
+  auto_enable = "NEW"
+
+  dynamic "additional_configuration" {
+    for_each = contains(local.features, "EKS_ADDON_MANAGEMENT") ? ["true"] : []
+    content {
+      name   = "EKS_ADDON_MANAGEMENT"
+      auto_enable = "NEW"
+    }
+  }
+
+  dynamic "additional_configuration" {
+    for_each = contains(local.features, "ECS_FARGATE_AGENT_MANAGEMENT") ? ["true"] : []
+    content {
+      name   = "ECS_FARGATE_AGENT_MANAGEMENT"
+      auto_enable = "NEW"
+    }
+  }
+
+  dynamic "additional_configuration" {
+    for_each = contains(local.features, "EC2_AGENT_MANAGEMENT") ? ["true"] : []
+    content {
+      name   = "EC2_AGENT_MANAGEMENT"
+      auto_enable = "NEW"
     }
   }
 
