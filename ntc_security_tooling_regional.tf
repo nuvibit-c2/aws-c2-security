@@ -2,7 +2,9 @@
 # this will cause an error when configuring regional security config for guardduty
 # to avoid this issue guardduty detector can be imported
 
-data "aws_guardduty_detector" "euc1" {}
+data "aws_guardduty_detector" "euc1" {
+  provider = aws.euc1
+}
 import {
   to = module.ntc_regional_security_config_euc1.aws_guardduty_detector.ntc_guardduty[0]
   id = data.aws_guardduty_detector.euc1.id
@@ -13,6 +15,9 @@ import {
 # ---------------------------------------------------------------------------------------------------------------------
 module "ntc_regional_security_config_euc1" {
   source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling//modules/regional-security-config?ref=feat-regional-security-config"
+
+  # DEBUG
+  count = 0
 
   # https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_regions.html
   guardduty_config = {
@@ -112,4 +117,32 @@ module "ntc_regional_security_config_euc1" {
   providers = {
     aws = aws.euc1
   }
+}
+
+
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# ¦ DEBUG
+# ---------------------------------------------------------------------------------------------------------------------
+data "aws_guardduty_detector" "euc2" {
+  provider = aws.euc2
+}
+
+resource "aws_guardduty_detector_feature" "ntc_guardduty" {
+  detector_id = data.aws_guardduty_detector.euc2.id
+  name        = "RUNTIME_MONITORING"
+  status      = "ENABLED"
+
+  dynamic "additional_configuration" {
+    for_each = {
+      for configuration in ["EKS_ADDON_MANAGEMENT", "ECS_FARGATE_AGENT_MANAGEMENT", "EC2_AGENT_MANAGEMENT"] : configuration => configuration
+    }
+    content {
+      name   = additional_configuration.value
+      status = "ENABLED"
+    }
+  }
+
+  provider = aws.euc2
 }
