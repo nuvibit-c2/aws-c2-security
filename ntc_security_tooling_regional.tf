@@ -111,6 +111,55 @@ module "ntc_regional_security_config_euc1" {
     }
   }
 
+  # the filter criterias for IAM Access Analyzer can be found here:
+  # https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-reference-filter-keys.html
+  iam_access_analyzer_config = [
+    {
+      analyzer_name = "ntc-external-access-analyzer"
+      type          = "ORGANIZATION"
+      rules = [
+        {
+          rule_name = "archive-all-not-public"
+          filters = [
+            {
+              criteria = "isPublic"
+              eq       = ["false"]
+            }
+          ]
+        },
+        {
+          rule_name = "archive-all-ntc-userids"
+          filters = [
+            {
+              criteria = "error"
+              exists   = true
+            },
+            {
+              criteria = "condition.aws:UserId"
+              contains = ["ntc"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      analyzer_name     = "ntc-unused-access-analyzer"
+      type              = "ORGANIZATION_UNUSED_ACCESS"
+      unused_access_age = 90
+      rules = [
+        {
+          rule_name = "archive-all-aws-sso-roles"
+          filters = [
+            {
+              criteria = "resource"
+              contains = ["aws-reserved/sso.amazonaws.com/"]
+            }
+          ]
+        }
+      ]
+    },
+  ]
+
   providers = {
     aws = aws.euc1
   }
