@@ -14,7 +14,7 @@ import {
 # ¦ NTC SECURITY TOOLING - REGIONAL CONFIGURATION - FRANKFURT
 # ---------------------------------------------------------------------------------------------------------------------
 module "ntc_regional_security_config_euc1" {
-  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling//modules/regional-security-config?ref=feat-regional-security-config"
+  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling//modules/regional-security-config?ref=1.3.1"
 
   # https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_regions.html
   guardduty_config = {
@@ -69,7 +69,7 @@ module "ntc_regional_security_config_euc1" {
         }
       ]
       # (optional) invite existing organization members to guardduty
-      invite_members_by_acccount_id = []
+      invite_members_by_account_id = []
     }
 
     # (optional) export all guardduty findings to s3 log archive
@@ -107,7 +107,7 @@ module "ntc_regional_security_config_euc1" {
         }
       ]
       # (optional) invite existing organization members to inspector
-      invite_members_by_acccount_id = []
+      invite_members_by_account_id = []
     }
   }
 
