@@ -116,8 +116,8 @@ module "ntc_regional_security_config_euc1" {
   # IAM Access Analyzer is Regional. For external access, you must enable IAM Access Analyzer in each Region independently.
   # For unused access, findings for the analyzer do not change based on Region. Creating an analyzer in each Region where you have resources is not required.
   # 
-  # 'iam_access_analyzer_config' should not be list input -> only 1 external-access and 1 unused-access analyzer can be configured
   # unused-access is only configured once and not regionally (keep it in regional submodule?)
+  # separate list of 'unused-access' and 'external-access'?
   # local config vs. organization config? does org config also apply to security account?
 
 
