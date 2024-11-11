@@ -112,6 +112,15 @@ module "ntc_regional_security_config_euc1" {
     }
   }
 
+  # FIXME: 
+  # IAM Access Analyzer is Regional. For external access, you must enable IAM Access Analyzer in each Region independently.
+  # For unused access, findings for the analyzer do not change based on Region. Creating an analyzer in each Region where you have resources is not required.
+  # 
+  # 'iam_access_analyzer_config' should not be list input -> only 1 external-access and 1 unused-access analyzer can be configured
+  # unused-access is only configured once and not regionally (keep it in regional submodule?)
+  # local config vs. organization config? does org config also apply to security account?
+
+
   # the filter criterias for IAM Access Analyzer can be found here:
   # https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-reference-filter-keys.html
   iam_access_analyzer_config = [
