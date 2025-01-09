@@ -2,8 +2,8 @@
 # ¦ NTC SECURITY TOOLING
 # ---------------------------------------------------------------------------------------------------------------------
 module "ntc_security_tooling" {
-  # source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.2.0"
-  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.3.1"
+  # source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.3.1"
+  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=feat-consolidated-findings"
 
   # (optional) aggregate config data from all accounts in all regions across organizations
   # admin delegation for "config.amazonaws.com" required
