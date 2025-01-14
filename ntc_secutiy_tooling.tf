@@ -1,3 +1,12 @@
+# WARNING: securityhub will get enabled by default when creating the admin delegation in organizations
+# this will cause an error when configuring security tooling
+# to avoid this issue securityhub can be imported
+
+import {
+  to = module.ntc_security_tooling.aws_securityhub_account.ntc_securityhub_central
+  id = data.aws_caller_identity.current.account_id
+}
+
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ NTC SECURITY TOOLING
 # ---------------------------------------------------------------------------------------------------------------------
