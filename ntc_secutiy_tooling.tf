@@ -18,6 +18,9 @@ module "ntc_security_tooling" {
   # admin delegation for "config.amazonaws.com" required
   # https://docs.aws.amazon.com/config/latest/developerguide/aggregate-data.html
   enable_config_aggregation = true
+  # set to true to enable securityhub standards that securityhub has designated as automatically enabled
+  # use 'securityhub_central_configuration_polices' to configure security standards across entire aws organizations
+  enable_securityhub_default_standards = false
 
   # enrich securityhub findings with account context
   securityhub_enrichment_settings = {
