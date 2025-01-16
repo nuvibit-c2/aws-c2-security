@@ -13,13 +13,15 @@ import {
 module "ntc_security_tooling" {
   source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.4.0"
 
-  # (optional) aggregate config data from all accounts in all regions across organizations
-  # admin delegation for "config.amazonaws.com" required
-  # https://docs.aws.amazon.com/config/latest/developerguide/aggregate-data.html
-  enable_config_aggregation = true
   # set to true to enable securityhub standards that securityhub has designated as automatically enabled
   # use 'securityhub_central_configuration_polices' to configure security standards across entire aws organizations
   enable_securityhub_default_standards = false
+
+  # securityhub aggregration is required for central configuration
+  enable_securityhub_central_configuration = true
+  enable_securityhub_aggregation           = true
+  # can be either "ALL_REGIONS" or a list of regions which should be aggregated
+  securityhub_aggregation_regions = ["ALL_REGIONS"]
 
   # enrich securityhub findings with account context
   securityhub_enrichment_settings = {
@@ -80,12 +82,6 @@ module "ntc_security_tooling" {
     # https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-findings-format-syntax.html
     automation_rules = jsondecode(file("${path.module}/example_automation_rules.json"))
   }
-
-  # securityhub aggregration is required for central configuration
-  enable_securityhub_central_configuration = true
-  enable_securityhub_aggregation           = true
-  # can be either "ALL_REGIONS" or a list of regions which should be aggregated
-  securityhub_aggregation_regions = ["ALL_REGIONS"]
 
   # define securityhub central configuration policies
   # https://docs.aws.amazon.com/securityhub/latest/userguide/central-configuration-intro.html
