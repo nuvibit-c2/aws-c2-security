@@ -112,24 +112,19 @@ module "ntc_regional_security_config_euc1" {
     }
   }
 
-  # FIXME: 
-  # IAM Access Analyzer is Regional. For external access, you must enable IAM Access Analyzer in each Region independently.
-  # For unused access, findings for the analyzer do not change based on Region. Creating an analyzer in each Region where you have resources is not required.
-  # 
-  # unused-access is only configured once and not regionally (keep it in regional submodule?)
-  # separate list of 'unused-access' and 'external-access'?
-  # local config vs. organization config? does org config also apply to security account?
-
-
-  # the filter criterias for IAM Access Analyzer can be found here:
-  # https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-reference-filter-keys.html
+  # iam access analyzer helps you identify the resources in your organization and accounts, such as Amazon S3 buckets or IAM roles, shared with an external entity
   iam_access_analyzer_config = [
     {
-      analyzer_name = "ntc-external-access-analyzer"
-      type          = "ORGANIZATION"
+      analyzer_name = "ntc-external-access-analysis"
+      # external access analyzers help identify resources in your organization and accounts that are shared with an external entity
+      findings_type = "external_access_analysis"
+      # scope of analyzer can be current account or the entire organization 
+      findings_scope = "organization"
       rules = [
         {
           rule_name = "archive-all-not-public"
+          # the filter criterias for IAM Access Analyzer can be found here:
+          # https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-reference-filter-keys.html
           filters = [
             {
               criteria = "isPublic"
@@ -152,13 +147,21 @@ module "ntc_regional_security_config_euc1" {
         }
       ]
     },
+    # WARNING: unused access analyzer should only be enabled in a single region
+    # findings for the unused access analyzer do not change based on region
     {
-      analyzer_name     = "ntc-unused-access-analyzer"
-      type              = "ORGANIZATION_UNUSED_ACCESS"
+      analyzer_name = "ntc-unused-access-analysis"
+      # unused access analyzers help identify unused access in your organization and accounts
+      findings_type = "unused_access_analysis"
+      # scope of analyzer can be current account or the entire organization 
+      findings_scope = "organization"
+      # access age in days for which to generate findings for unused access
       unused_access_age = 90
       rules = [
         {
           rule_name = "archive-all-aws-sso-roles"
+          # the filter criterias for IAM Access Analyzer can be found here:
+          # https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-reference-filter-keys.html
           filters = [
             {
               criteria = "resource"
