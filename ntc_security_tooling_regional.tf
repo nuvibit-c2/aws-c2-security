@@ -123,15 +123,13 @@ module "ntc_regional_security_config_euc1" {
       rules = [
         {
           rule_name = "archive-all-not-public"
-          # the filter criterias for IAM Access Analyzer can be found here:
+          # the filter keys for IAM Access Analyzer can be found here:
           # https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-reference-filter-keys.html
           filters = [
             {
-              criteria = "isPublic"
-              equal    = ["false"]
-              # not_equal = [] 
-              # contains  = []
-              # exists    = true
+              filter_key = "isPublic"
+              condition  = "equals"
+              values     = ["false"]
             }
           ]
         },
@@ -139,12 +137,14 @@ module "ntc_regional_security_config_euc1" {
           rule_name = "archive-all-ntc-userids"
           filters = [
             {
-              criteria = "error"
-              exists   = true
+              filter_key = "error"
+              condition  = "exists"
+              values     = ["true"]
             },
             {
-              criteria = "condition.aws:UserId"
-              contains = ["AIDACKCEVSQ6C2EXAMPLE"]
+              filter_key = "condition.aws:UserId"
+              condition  = "contains"
+              values     = ["AIDACKCEVSQ6C2EXAMPLE"]
             }
           ]
         }
@@ -163,17 +163,18 @@ module "ntc_regional_security_config_euc1" {
       rules = [
         {
           rule_name = "archive-all-aws-sso-roles"
-          # the filter criterias for IAM Access Analyzer can be found here:
+          # the filter keys for IAM Access Analyzer can be found here:
           # https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-reference-filter-keys.html
           filters = [
             {
-              criteria = "resource"
-              contains = ["aws-reserved/sso.amazonaws.com/"]
+              filter_key = "resource"
+              condition  = "contains"
+              values     = ["aws-reserved/sso.amazonaws.com/"]
             }
           ]
         }
       ]
-    },
+    }
   ]
 
   providers = {
