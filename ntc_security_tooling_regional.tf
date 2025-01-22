@@ -128,7 +128,10 @@ module "ntc_regional_security_config_euc1" {
           filters = [
             {
               criteria = "isPublic"
-              eq       = ["false"]
+              equal    = ["false"]
+              # not_equal = [] 
+              # contains  = []
+              # exists    = true
             }
           ]
         },
@@ -141,7 +144,7 @@ module "ntc_regional_security_config_euc1" {
             },
             {
               criteria = "condition.aws:UserId"
-              contains = ["ntc"]
+              contains = ["AIDACKCEVSQ6C2EXAMPLE"]
             }
           ]
         }
