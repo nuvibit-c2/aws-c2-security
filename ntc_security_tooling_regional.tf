@@ -123,13 +123,14 @@ module "ntc_regional_security_config_euc1" {
       rules = [
         {
           rule_name = "archive-all-not-public"
-          # the filter keys for IAM Access Analyzer can be found here:
-          # https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-reference-filter-keys.html
           filters = [
             {
+              # the filter keys for IAM Access Analyzer can be found here:
+              # https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-reference-filter-keys.html
               filter_key = "isPublic"
-              condition  = "equals"
-              values     = ["false"]
+              # valid conditions are 'equals', 'not_equals', 'contains' and 'exists'
+              condition = "equals"
+              values    = ["false"]
             }
           ]
         },
@@ -163,8 +164,6 @@ module "ntc_regional_security_config_euc1" {
       rules = [
         {
           rule_name = "archive-all-aws-sso-roles"
-          # the filter keys for IAM Access Analyzer can be found here:
-          # https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-reference-filter-keys.html
           filters = [
             {
               filter_key = "resource"
