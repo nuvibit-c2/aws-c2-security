@@ -3,9 +3,7 @@ locals {
   ntc_parameters_writer_node = "security-tooling"
 
   # parameters that are managed by core security account
-  ntc_parameters_to_write = {
-    "test_parameter": true
-  }
+  ntc_parameters_to_write = {}
 
   # by default existing node parameters will be merged with new parameters to avoid deleting parameters
   ntc_replace_parameters = true
