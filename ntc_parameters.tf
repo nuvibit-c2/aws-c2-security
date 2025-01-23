@@ -3,7 +3,9 @@ locals {
   ntc_parameters_writer_node = "security-tooling"
 
   # parameters that are managed by core security account
-  ntc_parameters_to_write = {}
+  ntc_parameters_to_write = {
+    "test_parameter": true
+  }
 
   # by default existing node parameters will be merged with new parameters to avoid deleting parameters
   ntc_replace_parameters = true
@@ -16,8 +18,7 @@ locals {
 # ¦ NTC PARAMETERS - READER
 # ---------------------------------------------------------------------------------------------------------------------
 module "ntc_parameters_reader" {
-  # source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-parameters//modules/reader?ref=1.1.2"
-  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-parameters//modules/reader?ref=add-encryption-policy"
+  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-parameters//modules/reader?ref=1.1.2"
 
   bucket_name = local.ntc_parameters_bucket_name
 
@@ -30,8 +31,7 @@ module "ntc_parameters_reader" {
 # ¦ NTC PARAMETERS - WRITER
 # ---------------------------------------------------------------------------------------------------------------------
 module "ntc_parameters_writer" {
-  # source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-parameters//modules/writer?ref=1.1.2"
-  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-parameters//modules/writer?ref=add-encryption-policy"
+  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-parameters//modules/writer?ref=1.1.2"
 
   bucket_name        = local.ntc_parameters_bucket_name
   parameter_node     = local.ntc_parameters_writer_node
