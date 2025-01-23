@@ -16,7 +16,8 @@ locals {
 # ¦ NTC PARAMETERS - READER
 # ---------------------------------------------------------------------------------------------------------------------
 module "ntc_parameters_reader" {
-  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-parameters//modules/reader?ref=1.1.2"
+  # source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-parameters//modules/reader?ref=1.1.2"
+  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-parameters//modules/reader?ref=add-encryption-policy"
 
   bucket_name = local.ntc_parameters_bucket_name
 
@@ -29,7 +30,8 @@ module "ntc_parameters_reader" {
 # ¦ NTC PARAMETERS - WRITER
 # ---------------------------------------------------------------------------------------------------------------------
 module "ntc_parameters_writer" {
-  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-parameters//modules/writer?ref=1.1.2"
+  # source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-parameters//modules/writer?ref=1.1.2"
+  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-parameters//modules/writer?ref=add-encryption-policy"
 
   bucket_name        = local.ntc_parameters_bucket_name
   parameter_node     = local.ntc_parameters_writer_node
