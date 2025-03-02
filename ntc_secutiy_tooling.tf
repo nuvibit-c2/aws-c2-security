@@ -49,7 +49,7 @@ module "ntc_security_tooling" {
     ]
     # raw json notifications for specific severities
     severity_labels_findings_raw = ["HIGH"]
-    subscriptions_raw_findings   = [
+    subscriptions_findings_raw   = [
       {
         protocol  = "email"
         endpoints = ["stefano.franco@nuvibit.com"]
