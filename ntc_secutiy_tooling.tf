@@ -11,7 +11,8 @@ import {
 # ¦ NTC SECURITY TOOLING
 # ---------------------------------------------------------------------------------------------------------------------
 module "ntc_security_tooling" {
-  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.5.0"
+  # source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.5.0"
+  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=fix-sechub-notify-findings"
 
   # set to true to enable securityhub standards that securityhub has designated as automatically enabled
   # use 'securityhub_central_configuration_polices' to configure security standards across entire aws organizations
@@ -34,7 +35,7 @@ module "ntc_security_tooling" {
 
   # get notified via sns topic about security hub findings
   securityhub_notification_settings = {
-    enable_notifications = false
+    enable_notifications = true
     # identify for which AWS Organization notifications are sent
     org_identifier = "c2"
     # prettified finding notifications for specific severities
