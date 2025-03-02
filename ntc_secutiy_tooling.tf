@@ -48,8 +48,13 @@ module "ntc_security_tooling" {
       }
     ]
     # raw json notifications for specific severities
-    severity_labels_findings_raw = ["CRITICAL"]
-    subscriptions_raw_findings   = []
+    severity_labels_findings_raw = ["HIGH"]
+    subscriptions_raw_findings   = [
+      {
+        protocol  = "email"
+        endpoints = ["stefano.franco@nuvibit.com"]
+      }
+    ]
     # define how frequent reminders for findings should be sent
     reminder_x_days_unresolved_by_severity = {
       critical      = 1
