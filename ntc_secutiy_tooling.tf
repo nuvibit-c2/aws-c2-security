@@ -11,7 +11,7 @@ import {
 # ¦ NTC SECURITY TOOLING
 # ---------------------------------------------------------------------------------------------------------------------
 module "ntc_security_tooling" {
-  # source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.5.0"
+  # source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.6.1"
   source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=fix-sechub-notify-findings"
 
   # set to true to enable securityhub standards that securityhub has designated as automatically enabled
