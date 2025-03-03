@@ -48,7 +48,7 @@ module "ntc_security_tooling" {
       }
     ]
     # raw json notifications for specific severities
-    severity_labels_findings_raw = []
+    severity_labels_findings_raw = ["CRITICAL"]
     subscriptions_findings_raw   = []
     # define how frequent reminders for findings should be sent
     reminder_x_days_unresolved_by_severity = {
