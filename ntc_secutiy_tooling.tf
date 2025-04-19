@@ -94,13 +94,14 @@ module "ntc_security_tooling" {
       # policy targets can either be organizational units (OU) or aws accounts (ID)
       policy_targets = [
         local.ntc_parameters["mgmt-account-factory"]["core_accounts"]["aws-c2-management"],
-        local.ntc_parameters["mgmt-organizations"]["ou_ids"]["/root/infrastructure"],
-        local.ntc_parameters["mgmt-organizations"]["ou_ids"]["/root/security"],
+        local.ntc_parameters["mgmt-organizations"]["ou_ids"]["/root/core"],
         local.ntc_parameters["mgmt-organizations"]["ou_ids"]["/root/workloads"],
-        # policy will not be rolled out to sandbox accounts and to suspended or decommissioned accounts
+
+        # policy will not be rolled out to sandbox accounts and to suspended or accounts in transition
         # local.ntc_parameters["mgmt-organizations"]["ou_ids"]["/root/sandbox"],
         # local.ntc_parameters["mgmt-organizations"]["ou_ids"]["/root/suspended"],
-        # local.ntc_parameters["mgmt-organizations"]["ou_ids"]["/root/decommission"],
+
+        # local.ntc_parameters["mgmt-organizations"]["ou_ids"]["/root/transition"],
         # to apply policy to all accounts in organization use /root parent ou as target
         # local.ntc_parameters["mgmt-organizations"]["ou_ids"]["/root"]
       ]
