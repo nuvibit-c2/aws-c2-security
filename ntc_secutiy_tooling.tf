@@ -21,7 +21,12 @@ module "ntc_security_tooling" {
   enable_securityhub_central_configuration = true
   enable_securityhub_aggregation           = true
   # can be either "ALL_REGIONS" or a list of regions which should be aggregated
-  securityhub_aggregation_regions = ["ALL_REGIONS"]
+  # this will also apply the central configuration policies to the specified regions
+  securityhub_aggregation_regions = [
+    # "eu-central-1", current region must be excluded from this list
+    "eu-central-2", 
+    "us-east-1"
+  ]
 
   # enrich securityhub findings with account context
   securityhub_enrichment_settings = {
