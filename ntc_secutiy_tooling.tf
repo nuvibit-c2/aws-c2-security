@@ -11,7 +11,8 @@ import {
 # ¦ NTC SECURITY TOOLING
 # ---------------------------------------------------------------------------------------------------------------------
 module "ntc_security_tooling" {
-  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.6.2"
+  # source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.6.2"
+  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=automation-rules-notifications-enhancements"
 
   # set to true to enable securityhub standards that securityhub has designated as automatically enabled
   # use 'securityhub_central_configuration_polices' to configure security standards across entire aws organizations
