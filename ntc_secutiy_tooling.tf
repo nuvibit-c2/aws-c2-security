@@ -54,7 +54,7 @@ module "ntc_security_tooling" {
     subscriptions_findings_pretty = [
       {
         protocol  = "email"
-        endpoints = ["stefano.franco@nuvibit.com", "balazs.buri@nuvibit.com", "operations+aws-c2-security@nuvibit.com"]
+        endpoints = ["balazs.buri@nuvibit.com", "operations+aws-c2-security@nuvibit.com"]
       }
     ]
     # raw json notifications for specific severities
@@ -80,7 +80,7 @@ module "ntc_security_tooling" {
       subscriptions = [
         {
           protocol  = "email"
-          endpoints = ["stefano.franco@nuvibit.com", "balazs.buri@nuvibit.com", "operations+aws-c2-security@nuvibit.com"]
+          endpoints = ["balazs.buri@nuvibit.com", "operations+aws-c2-security@nuvibit.com"]
         }
       ]
     }
