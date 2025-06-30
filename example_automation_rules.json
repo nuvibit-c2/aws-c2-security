@@ -1,8 +1,59 @@
 [
+    ,
+    {
+        "IsTerminal": false,
+        "RuleName": "NO_INSPECTOR_RAW_NOTIFICATIONS",
+        "RuleOrder": 10,
+        "RuleStatus": "ENABLED",
+        "Description": "TURN OFF INSPECTOR RAW NOTIFICATIONS",
+        "Criteria": {
+            "ProductName": [
+                {
+                    "Comparison": "EQUALS",
+                    "Value": "Inspector"
+                }
+            ]
+        },
+        "Actions": [
+            {
+                "Type": "FINDING_FIELDS_UPDATE",
+                "FindingFieldsUpdate": {
+                    "UserDefinedFields": {
+                        "NTC_SUPPRESS_NOTIFICATION": "RAW"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "IsTerminal": false,
+        "RuleName": "NO_SECURITYHUB_PRETTY_NOTIFICATIONS",
+        "RuleOrder": 20,
+        "RuleStatus": "ENABLED",
+        "Description": "TURN OFF SECURITY HUB PRETTY NOTIFICATIONS",
+        "Criteria": {
+            "ProductName": [
+                {
+                    "Comparison": "EQUALS",
+                    "Value": "SecurityHub"
+                }
+            ]
+        },
+        "Actions": [
+            {
+                "Type": "FINDING_FIELDS_UPDATE",
+                "FindingFieldsUpdate": {
+                    "UserDefinedFields": {
+                        "NTC_SUPPRESS_NOTIFICATION": "PRETTY"
+                    }
+                }
+            }
+        ]
+    },
     {
         "IsTerminal": true,
         "RuleName": "RULE-SEVERITY-MFA",
-        "RuleOrder": 1,
+        "RuleOrder": 30,
         "RuleStatus": "ENABLED",
         "Description": "example rule",
         "Criteria": {
@@ -60,7 +111,7 @@
     {
         "IsTerminal": true,
         "RuleName": "RULE-SUPPRESS-ATHENA",
-        "RuleOrder": 2,
+        "RuleOrder": 40,
         "RuleStatus": "ENABLED",
         "Description": "suppress Athena primary workgroup finding",
         "Criteria": {
@@ -104,56 +155,6 @@
                     },
                     "Note": {
                         "Text": "RULE-SUPPRESS-ATHENA | The primary group is always unencrypted"
-                    }
-                }
-            }
-        ]
-    },
-    {
-        "IsTerminal": false,
-        "RuleName": "NO_INSPECTOR_RAW_NOTIFICATIONS",
-        "RuleOrder": 3,
-        "RuleStatus": "ENABLED",
-        "Description": "TURN OFF INSPECTOR RAW NOTIFICATIONS",
-        "Criteria": {
-            "ProductName": [
-                {
-                    "Comparison": "EQUALS",
-                    "Value": "Inspector"
-                }
-            ]
-        },
-        "Actions": [
-            {
-                "Type": "FINDING_FIELDS_UPDATE",
-                "FindingFieldsUpdate": {
-                    "UserDefinedFields": {
-                        "NTC_SUPPRESS_NOTIFICATION": "RAW"
-                    }
-                }
-            }
-        ]
-    },
-    {
-        "IsTerminal": false,
-        "RuleName": "NO_SECURITYHUB_PRETTY_NOTIFICATIONS",
-        "RuleOrder": 4,
-        "RuleStatus": "ENABLED",
-        "Description": "TURN OFF SECURITY HUB PRETTY NOTIFICATIONS",
-        "Criteria": {
-            "ProductName": [
-                {
-                    "Comparison": "EQUALS",
-                    "Value": "Inspector"
-                }
-            ]
-        },
-        "Actions": [
-            {
-                "Type": "FINDING_FIELDS_UPDATE",
-                "FindingFieldsUpdate": {
-                    "UserDefinedFields": {
-                        "NTC_SUPPRESS_NOTIFICATION": "PRETTY"
                     }
                 }
             }
