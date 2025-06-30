@@ -45,7 +45,7 @@ module "ntc_security_tooling" {
 
   # get notified via sns topic about security hub findings
   securityhub_notification_settings = {
-    enable_notifications = false
+    enable_notifications = true
     # identify for which AWS Organization notifications are sent
     org_identifier = "c2"
     # prettified finding notifications for specific severities
@@ -54,7 +54,7 @@ module "ntc_security_tooling" {
     subscriptions_findings_pretty = [
       {
         protocol  = "email"
-        endpoints = ["stefano.franco@nuvibit.com"]
+        endpoints = ["stefano.franco@nuvibit.com", "balazs.buri@nuvibit.com", "operations+aws-c2-security@nuvibit.com"]
       }
     ]
     # raw json notifications for specific severities
@@ -80,7 +80,7 @@ module "ntc_security_tooling" {
       subscriptions = [
         {
           protocol  = "email"
-          endpoints = ["stefano.franco@nuvibit.com"]
+          endpoints = ["stefano.franco@nuvibit.com", "balazs.buri@nuvibit.com", "operations+aws-c2-security@nuvibit.com"]
         }
       ]
     }

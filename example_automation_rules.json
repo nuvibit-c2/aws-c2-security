@@ -108,5 +108,55 @@
                 }
             }
         ]
+    },
+    {
+        "IsTerminal": false,
+        "RuleName": "NO_INSPECTOR_RAW_NOTIFICATIONS",
+        "RuleOrder": 3,
+        "RuleStatus": "ENABLED",
+        "Description": "TURN OFF INSPECTOR RAW NOTIFICATIONS",
+        "Criteria": {
+            "ProductName": [
+                {
+                    "Comparison": "EQUALS",
+                    "Value": "Inspector"
+                }
+            ]
+        },
+        "Actions": [
+            {
+                "Type": "FINDING_FIELDS_UPDATE",
+                "FindingFieldsUpdate": {
+                    "UserDefinedFields": {
+                        "NTC_SUPPRESS_NOTIFICATION": "RAW"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "IsTerminal": false,
+        "RuleName": "NO_SECURITYHUB_PRETTY_NOTIFICATIONS",
+        "RuleOrder": 4,
+        "RuleStatus": "ENABLED",
+        "Description": "TURN OFF SECURITY HUB PRETTY NOTIFICATIONS",
+        "Criteria": {
+            "ProductName": [
+                {
+                    "Comparison": "EQUALS",
+                    "Value": "Inspector"
+                }
+            ]
+        },
+        "Actions": [
+            {
+                "Type": "FINDING_FIELDS_UPDATE",
+                "FindingFieldsUpdate": {
+                    "UserDefinedFields": {
+                        "NTC_SUPPRESS_NOTIFICATION": "PRETTY"
+                    }
+                }
+            }
+        ]
     }
 ]
