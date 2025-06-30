@@ -1,10 +1,10 @@
 [
     {
         "IsTerminal": false,
-        "RuleName": "NO_INSPECTOR_RAW_NOTIFICATIONS",
+        "RuleName": "NO_INSPECTOR_PRETTY_NOTIFICATIONS",
         "RuleOrder": 10,
         "RuleStatus": "ENABLED",
-        "Description": "TURN OFF INSPECTOR RAW NOTIFICATIONS",
+        "Description": "TURN OFF INSPECTOR PRETTY NOTIFICATIONS",
         "Criteria": {
             "ProductName": [
                 {
@@ -18,7 +18,7 @@
                 "Type": "FINDING_FIELDS_UPDATE",
                 "FindingFieldsUpdate": {
                     "UserDefinedFields": {
-                        "NTC_SUPPRESS_NOTIFICATION": "RAW"
+                        "NTC_SUPPRESS_NOTIFICATION": "PRETTY"
                     }
                 }
             }
@@ -26,15 +26,15 @@
     },
     {
         "IsTerminal": false,
-        "RuleName": "NO_SECURITYHUB_PRETTY_NOTIFICATIONS",
+        "RuleName": "NO_SECURITYHUB_RAW_NOTIFICATIONS",
         "RuleOrder": 20,
         "RuleStatus": "ENABLED",
-        "Description": "TURN OFF SECURITY HUB PRETTY NOTIFICATIONS",
+        "Description": "TURN OFF SECURITY HUB RAW NOTIFICATIONS",
         "Criteria": {
             "ProductName": [
                 {
                     "Comparison": "EQUALS",
-                    "Value": "SecurityHub"
+                    "Value": "Security Hub"
                 }
             ]
         },
@@ -43,7 +43,7 @@
                 "Type": "FINDING_FIELDS_UPDATE",
                 "FindingFieldsUpdate": {
                     "UserDefinedFields": {
-                        "NTC_SUPPRESS_NOTIFICATION": "PRETTY"
+                        "NTC_SUPPRESS_NOTIFICATION": "RAW"
                     }
                 }
             }

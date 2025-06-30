@@ -49,7 +49,7 @@ module "ntc_security_tooling" {
     # identify for which AWS Organization notifications are sent
     org_identifier = "c2"
     # prettified finding notifications for specific severities
-    severity_labels_findings_pretty = ["CRITICAL"]
+    severity_labels_findings_pretty = ["CRITICAL", "HIGH"]
 
     subscriptions_findings_pretty = [
       {
