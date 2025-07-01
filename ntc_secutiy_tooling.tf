@@ -45,7 +45,7 @@ module "ntc_security_tooling" {
 
   # get notified via sns topic about security hub findings
   securityhub_notification_settings = {
-    enable_notifications = true
+    enable_notifications = false
     # identify for which AWS Organization notifications are sent
     org_identifier = "c2"
     # prettified finding notifications for specific severities
