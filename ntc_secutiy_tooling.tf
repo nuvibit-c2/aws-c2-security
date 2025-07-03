@@ -24,7 +24,7 @@ module "ntc_security_tooling" {
   # this will also apply the central configuration policies to the specified regions
   securityhub_aggregation_regions = [
     # "eu-central-1", current region must be excluded from this list
-    "eu-central-2", 
+    "eu-central-2",
     "us-east-1"
   ]
 
