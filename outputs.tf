@@ -12,3 +12,8 @@ output "ntc_parameters" {
   description = "Map of all ntc parameters"
   value       = local.ntc_parameters
 }
+
+output "dummy_output" {
+  description = "test"
+  value       = "trigger plan"
+}
