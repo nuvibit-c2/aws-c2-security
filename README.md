@@ -35,7 +35,7 @@ Version: 1.1.4
 
 Source: github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling//modules/regional-security-config
 
-Version: 1.7.0
+Version: 1.7.2
 
 ### ntc\_security\_tooling
 
