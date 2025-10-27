@@ -41,7 +41,7 @@ Version: 1.7.0
 
 Source: github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling
 
-Version: 1.7.0
+Version: 1.7.1
 
 ## Resources
 
