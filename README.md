@@ -71,6 +71,10 @@ Description: The current account id
 
 Description: The default region name
 
+### dummy\_output
+
+Description: test
+
 ### ntc\_parameters
 
 Description: Map of all ntc parameters
