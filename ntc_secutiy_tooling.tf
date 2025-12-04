@@ -11,7 +11,7 @@ import {
 # ¦ NTC SECURITY TOOLING
 # ---------------------------------------------------------------------------------------------------------------------
 module "ntc_security_tooling" {
-  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.7.0"
+  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.8.0"
 
   # set to true to enable securityhub standards that securityhub has designated as automatically enabled
   # use 'securityhub_central_configuration_polices' to configure security standards across entire aws organizations
@@ -117,11 +117,15 @@ module "ntc_security_tooling" {
       ]
       enabled_standards = [
         "aws-foundational-security-best-practices/v/1.0.0",
-        "cis-aws-foundations-benchmark/v/3.0.0",
-        # "cis-aws-foundations-benchmark/v/1.4.0",
+        # "aws-resource-tagging-standard/v/1.0.0",
         # "cis-aws-foundations-benchmark/v/1.2.0",
+        # "cis-aws-foundations-benchmark/v/1.4.0",
+        # "cis-aws-foundations-benchmark/v/3.0.0",
+        "cis-aws-foundations-benchmark/v/5.0.0",
+        # "nist-800-171/v/2.0.0",
         # "nist-800-53/v/5.0.0",
         # "pci-dss/v/3.2.1",
+        # "pci-dss/v/4.0.1",
       ]
       # either provide a list of control ids which should be enabled (all other existing and future controls will be disabled)
       enabled_control_ids = []

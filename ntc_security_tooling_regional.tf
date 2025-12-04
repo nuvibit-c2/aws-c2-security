@@ -2,9 +2,7 @@
 # this will cause an error when configuring regional security config for guardduty
 # to avoid this issue guardduty detector can be imported
 
-data "aws_guardduty_detector" "euc1" {
-  provider = aws.euc1
-}
+data "aws_guardduty_detector" "euc1" {}
 import {
   to = module.ntc_regional_security_config_euc1.aws_guardduty_detector.ntc_guardduty[0]
   id = data.aws_guardduty_detector.euc1.id
@@ -14,7 +12,7 @@ import {
 # ¦ NTC SECURITY TOOLING - REGIONAL CONFIGURATION - FRANKFURT
 # ---------------------------------------------------------------------------------------------------------------------
 module "ntc_regional_security_config_euc1" {
-  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling//modules/regional-security-config?ref=1.7.0"
+  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling//modules/regional-security-config?ref=1.8.0"
 
   # https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_regions.html
   guardduty_config = {
