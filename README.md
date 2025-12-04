@@ -13,8 +13,6 @@ The following providers are used by this module:
 
 - aws (~> 5.33)
 
-- aws.euc1 (~> 5.33)
-
 ## Modules
 
 The following Modules are called:
@@ -35,13 +33,13 @@ Version: 1.1.4
 
 Source: github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling//modules/regional-security-config
 
-Version: 1.7.0
+Version: 1.8.0
 
 ### ntc\_security\_tooling
 
 Source: github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling
 
-Version: 1.7.0
+Version: 1.8.0
 
 ## Resources
 
