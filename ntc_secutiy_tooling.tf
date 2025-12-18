@@ -188,7 +188,7 @@ import {
 # 6. Central Configuration Policies: Organization-wide security standards
 # =====================================================================================================================
 module "ntc_security_tooling" {
-  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.8.0"
+  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.8.1"
 
   # -------------------------------------------------------------------------------------------------------------------
   # SECURITY HUB STANDARDS CONFIGURATION
@@ -471,8 +471,6 @@ module "ntc_security_tooling" {
     {
       name        = "ntc-securityhub-central-policy"
       description = "securityhub central policy"
-      # enable or disable securityhub in target accounts
-      enable_securityhub = true
       # policy targets can either be organizational units (OU) or aws accounts (ID)
       policy_targets = [
         local.ntc_parameters["mgmt-account-factory"]["core_accounts"]["aws-c2-management"],
