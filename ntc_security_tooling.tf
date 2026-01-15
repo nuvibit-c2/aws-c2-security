@@ -149,18 +149,29 @@
 # =====================================================================================================================
 
 # =====================================================================================================================
-# TERRAFORM IMPORT - AVOID SECURITY HUB CREATION CONFLICT
+# TERRAFORM IMPORT - AVOID SECURITY HUB & GUARDDUTY CREATION CONFLICT
 # =====================================================================================================================
-# AWS automatically enables Security Hub when creating the admin delegation in Organizations
-# This causes a Terraform error when NTC Security Tooling tries to create Security Hub
+# AWS automatically enables Security Hub and GuardDuty when creating the admin delegation in Organizations
+# This causes a Terraform error when NTC Security Tooling tries to create Security Hub account or GuardDuty detector
 #
-# Import the existing Security Hub account into Terraform state before applying
+# Import the existing Security Hub account and GuardDuty detector into Terraform state before applying
 #
 # Use the import block (Terraform 1.5+):
 # =====================================================================================================================
 import {
   to = module.ntc_security_tooling.aws_securityhub_account.ntc_securityhub_central
   id = data.aws_caller_identity.current.account_id
+}
+
+data "aws_guardduty_detector" "existing" {
+  for_each = toset(["eu-central-1", "us-east-1"])
+  region   = each.key
+}
+
+import {
+  for_each = toset(["eu-central-1", "us-east-1"])
+  to       = module.ntc_security_tooling.module.regional_security_config[each.key].aws_guardduty_detector.ntc_guardduty[0]
+  id       = "${data.aws_guardduty_detector.existing[each.key].id}@${each.key}"
 }
 
 # =====================================================================================================================
@@ -188,7 +199,27 @@ import {
 # 6. Central Configuration Policies: Organization-wide security standards
 # =====================================================================================================================
 module "ntc_security_tooling" {
-  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=1.8.1"
+  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=feat-provider-v6" # TODO: change to '2.0.0' when released 
+
+  # -------------------------------------------------------------------------------------------------------------------
+  # HOME REGION CONFIGURATION
+  # -------------------------------------------------------------------------------------------------------------------
+  # Specify the home region where central Security Hub and Step Functions pipeline will be deployed
+  #
+  # LIMITATIONS:
+  #   ⚠️  MUST be a standard AWS region (not an opt-in region)
+  #   ⚠️  Opt-in regions (e.g., Zurich eu-central-2, Cape Town af-south-1) cannot be used as home region
+  #   ⚠️  Security Hub aggregation does not support opt-in regions as aggregation region
+  #   ⚠️  Linked regions can be any supported region (standard or opt-in)
+  #
+  # RECOMMENDATION:
+  #   • Use a nearby standard region (e.g., Frankfurt eu-central-1 for European workloads)
+  #   • Aggregate findings from all active regions including opt-in regions
+  #
+  # Reference: https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-regions.html
+  # See "REGIONAL CONSIDERATIONS" section at the top of this file for detailed explanation
+  # -------------------------------------------------------------------------------------------------------------------
+  region = "eu-central-1"
 
   # -------------------------------------------------------------------------------------------------------------------
   # SECURITY HUB STANDARDS CONFIGURATION
@@ -566,10 +597,390 @@ module "ntc_security_tooling" {
     }
   ]
 
-  providers = {
-    # WARNING some features of security tooling cannot be provisioned in an opt-in region
-    # e.g security hub aggregation does not supported an opt-in region as main region
-    # https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-regions.html
-    aws = aws.euc1
+  # -------------------------------------------------------------------------------------------------------------------
+  # GUARDDUTY CONFIGURATION - INTELLIGENT THREAT DETECTION
+  # -------------------------------------------------------------------------------------------------------------------
+  # Amazon GuardDuty: Continuous threat detection using machine learning and anomaly detection
+  #
+  # WHAT IS GUARDDUTY?
+  #   • Intelligent threat detection service that monitors for malicious activity and unauthorized behavior
+  #   • Analyzes AWS CloudTrail events, VPC Flow Logs, DNS logs, Kubernetes audit logs, and runtime data
+  #   • Uses machine learning, anomaly detection, and threat intelligence feeds (AWS, CrowdStrike, Proofpoint)
+  #   • Findings automatically sent to Security Hub for centralized management
+  #
+  # THREAT CATEGORIES DETECTED:
+  #   ✓ Reconnaissance: Port scanning, unusual API activity, suspicious DNS queries
+  #   ✓ Instance Compromise: Cryptocurrency mining, backdoor communication, malware execution
+  #   ✓ Account Compromise: Brute force attacks, credential exfiltration, unusual console logins
+  #   ✓ Bucket Compromise: Data exfiltration, public bucket exposure, suspicious access patterns
+  #   ✓ Container/Kubernetes: Privilege escalation, malicious container images, suspicious pods
+  #   ✓ Runtime Protection: Process injection, reverse shells, suspicious file access
+  #
+  # GUARDDUTY FEATURES:
+  #   • S3_DATA_EVENTS: Monitor S3 object-level API activity for data access anomalies
+  #   • EBS_MALWARE_PROTECTION: Scan EBS volumes for malware when suspicious activity detected
+  #   • RDS_LOGIN_EVENTS: Detect suspicious database login attempts and anomalous queries
+  #   • LAMBDA_NETWORK_LOGS: Monitor Lambda function network activity for command-and-control
+  #   • EKS_AUDIT_LOGS: Analyze Kubernetes control plane for suspicious API calls and RBAC changes
+  #   • RUNTIME_MONITORING: Deep runtime protection for EC2, ECS Fargate, and EKS workloads
+  #     - EC2_AGENT_MANAGEMENT: Deploy GuardDuty agent to EC2 instances for process/file monitoring
+  #     - ECS_FARGATE_AGENT_MANAGEMENT: Monitor ECS Fargate container runtime behavior
+  #     - EKS_ADDON_MANAGEMENT: Deploy GuardDuty agent as EKS add-on for pod-level visibility
+  #
+  # ORGANIZATION CONFIGURATION:
+  #   • auto_enable: Automatically enable GuardDuty for all organization accounts
+  #   • Features enabled organization-wide inherit to all member accounts
+  #   • Central Security account acts as GuardDuty delegated administrator
+  #   • Member accounts cannot disable GuardDuty or features (enforced from central)
+  #
+  # FINDING PUBLISHING FREQUENCY:
+  #   Options: FIFTEEN_MINUTES (fastest), ONE_HOUR (default), SIX_HOURS (cost-optimized)
+  #   Trade-off: Faster frequency = higher costs but quicker threat detection
+  #   Regional overrides available for critical regions (e.g., ONE_HOUR for us-east-1)
+  #
+  # LOG ARCHIVE INTEGRATION:
+  #   • Export all findings to S3 for long-term retention and compliance
+  #   • Encrypted with KMS for data protection
+  #   • Enables historical analysis and incident investigation beyond 90-day Security Hub retention
+  #
+  # PREREQUISITE:
+  #   ⚠️  Admin delegation for 'guardduty.amazonaws.com' required via NTC Organizations
+  #   ⚠️  Import existing GuardDuty detectors into Terraform state (see import blocks above)
+  # -------------------------------------------------------------------------------------------------------------------
+  guardduty_configuration = {
+    regions                      = ["eu-central-1", "us-east-1"]
+    finding_publishing_frequency = "SIX_HOURS"
+
+    organization_config = {
+      # enable guardduty in organization for 'ALL' members, 'NEW' members or 'NONE'
+      auto_enable = "ALL"
+      # individual features can be enabled in organization for 'ALL' members, 'NEW' members or 'NONE'
+      # enabled features will also be configured for current account
+      features = [
+        {
+          auto_enable = "ALL"
+          name        = "S3_DATA_EVENTS"
+        },
+        {
+          auto_enable = "ALL"
+          name        = "EBS_MALWARE_PROTECTION"
+        },
+        {
+          auto_enable = "ALL"
+          name        = "RDS_LOGIN_EVENTS"
+        },
+        {
+          auto_enable = "ALL"
+          name        = "LAMBDA_NETWORK_LOGS"
+        },
+        {
+          auto_enable = "NONE"
+          name        = "EKS_AUDIT_LOGS"
+        },
+        {
+          auto_enable = "ALL"
+          name        = "RUNTIME_MONITORING"
+          # 'RUNTIME_MONITORING' has additional configurations
+          additional_configuration = [
+            {
+              auto_enable = "NONE"
+              name        = "EKS_ADDON_MANAGEMENT"
+            },
+            {
+              auto_enable = "ALL"
+              name        = "ECS_FARGATE_AGENT_MANAGEMENT"
+            },
+            {
+              auto_enable = "ALL"
+              name        = "EC2_AGENT_MANAGEMENT"
+            }
+          ]
+        }
+      ]
+      # (optional) invite existing organization members to guardduty
+      invite_members_by_account_id = []
+    }
+
+    # (optional) export all guardduty findings to s3 log archive
+    export_findings         = true
+    log_archive_bucket_arn  = local.ntc_parameters["log-archive"]["log_bucket_arns"]["guardduty"]
+    log_archive_kms_key_arn = local.ntc_parameters["log-archive"]["log_bucket_kms_key_arns"]["guardduty"]
+
+    # (optional) override settings for specific regions
+    region_overrides = {
+      "us-east-1" = {
+        finding_publishing_frequency = "ONE_HOUR"
+      }
+    }
   }
+
+  # -------------------------------------------------------------------------------------------------------------------
+  # INSPECTOR CONFIGURATION - AUTOMATED VULNERABILITY MANAGEMENT
+  # -------------------------------------------------------------------------------------------------------------------
+  # Amazon Inspector: Continuous vulnerability scanning for workloads and container images
+  #
+  # WHAT IS INSPECTOR?
+  #   • Automated vulnerability assessment service that continuously scans workloads
+  #   • Checks against CVE databases (NVD, vendor advisories) and AWS security best practices
+  #   • Assigns risk scores based on CVSS, reachability, exploit availability, and network exposure
+  #   • Findings automatically sent to Security Hub for centralized remediation tracking
+  #
+  # VULNERABILITY TYPES DETECTED:
+  #   ✓ Software vulnerabilities: OS packages, programming language libraries, application dependencies
+  #   ✓ Network exposure: Publicly accessible instances with known vulnerabilities
+  #   ✓ Code vulnerabilities: Insecure coding patterns in Lambda functions (LAMBDA_CODE feature)
+  #   ✓ Compliance issues: CIS benchmarks, AWS security best practices
+  #
+  # INSPECTOR SCANNING FEATURES:
+  #   • EC2: Scan Amazon Linux, Ubuntu, Windows, RHEL, and other OS packages for vulnerabilities
+  #     - Uses AWS Systems Manager agent (SSM agent) for package inventory
+  #     - Continuously rescans as new CVEs discovered (no manual rescans needed)
+  #     - Assesses network reachability to prioritize internet-facing vulnerabilities
+  #   
+  #   • ECR: Scan container images in Amazon Elastic Container Registry
+  #     - Scans on push (new images automatically scanned)
+  #     - Continuous rescan as new CVEs discovered (up to 30 days after last pull)
+  #     - Scans OS packages and programming language packages (Python, Java, JavaScript, etc.)
+  #   
+  #   • LAMBDA: Scan Lambda function deployment packages and layers
+  #     - Scans code dependencies (requirements.txt, package.json, etc.)
+  #     - Continuous rescan as new CVEs discovered
+  #     - Identifies vulnerable libraries in all supported Lambda runtimes
+  #   
+  #   • LAMBDA_CODE: Deep code analysis for Lambda functions (beyond dependency scanning)
+  #     - Detects insecure coding practices (SQL injection, XSS, secrets in code)
+  #     - Identifies security anti-patterns and best practice violations
+  #     - Provides remediation guidance with code examples
+  #
+  # ORGANIZATION CONFIGURATION:
+  #   • auto_enable: Automatically enable Inspector for all organization accounts
+  #   • Features enabled organization-wide inherit to all member accounts
+  #   • Central Security account acts as Inspector delegated administrator
+  #   
+  #   ⚠️  INSPECTOR LIMITATION - NO 'ALL' MEMBERS SUPPORT:
+  #     • Inspector can only auto-enable for 'NEW' members (not 'ALL' like GuardDuty)
+  #     • Existing accounts must be manually invited via 'invite_members_by_account_id'
+  #     • This is an AWS Inspector limitation, not an NTC module limitation
+  #     • Workaround: Use 'invite_members_by_account_id' for existing accounts
+  #
+  # PREREQUISITES:
+  #   ⚠️  Admin delegation for 'inspector2.amazonaws.com' required via NTC Organizations
+  # -------------------------------------------------------------------------------------------------------------------
+  inspector_configuration = {
+    regions = ["eu-central-1", "us-east-1"]
+
+    organization_config = {
+      auto_enable = true
+      # individual features can be enabled in organization for 'NEW' members or 'NONE'
+      # WARNING: features cannot be enabled for 'ALL' members (inspector limitation)
+      # enabled features will also be configured for current account
+      features = [
+        {
+          auto_enable = "NEW"
+          name        = "EC2"
+        },
+        {
+          auto_enable = "NEW"
+          name        = "ECR"
+        },
+        {
+          auto_enable = "NEW"
+          name        = "LAMBDA"
+        },
+        {
+          auto_enable = "NEW"
+          name        = "LAMBDA_CODE"
+        }
+      ]
+      # (optional) invite existing organization members to inspector
+      invite_members_by_account_id = []
+    }
+
+    # (optional) override settings for specific regions
+    region_overrides = {}
+  }
+
+  # -------------------------------------------------------------------------------------------------------------------
+  # IAM ACCESS ANALYZER CONFIGURATION - EXTERNAL ACCESS & UNUSED PERMISSION DETECTION
+  # -------------------------------------------------------------------------------------------------------------------
+  # AWS IAM Access Analyzer: Identify unintended resource access and unused IAM permissions
+  #
+  # WHAT IS IAM ACCESS ANALYZER?
+  #   • Continuous monitoring service that uses automated reasoning and provable security analysis
+  #   • Two analyzer types: External Access Analysis and Unused Access Analysis
+  #   • Uses mathematical logic (automated reasoning) to analyze all possible access paths
+  #   • Findings automatically sent to Security Hub for centralized remediation
+  #
+  # WHY IAM ACCESS ANALYZER MATTERS:
+  #   • Prevents data breaches from misconfigured resource policies (S3 buckets, KMS keys, IAM roles)
+  #   • Implements least privilege by identifying unused permissions (CIEM - Cloud Infrastructure Entitlement Management)
+  #   • Complies with security frameworks requiring external access auditing (SOC2, ISO 27001, NIS2)
+  #   • Reduces attack surface by removing unnecessary permissions
+  #
+  # ANALYZER TYPE 1: EXTERNAL ACCESS ANALYSIS
+  # ------------------------------------------
+  # Identifies resources shared with external entities (outside your AWS organization)
+  #
+  # RESOURCES ANALYZED:
+  #   ✓ S3 buckets: Public access, cross-account sharing, bucket policies
+  #   ✓ IAM roles: Trust policies allowing external accounts or federated identities
+  #   ✓ KMS keys: Key policies granting external account access
+  #   ✓ Lambda functions: Resource-based policies with external invocation permissions
+  #   ✓ SQS queues: Queue policies allowing external senders
+  #   ✓ SNS topics: Topic policies with external subscriptions
+  #   ✓ Secrets Manager: Secret policies with cross-account access
+  #   ✓ ECR repositories: Repository policies allowing external pulls
+  #   ✓ EFS file systems: File system policies with external mount permissions
+  #   ✓ RDS snapshots: Shared with external accounts
+  #   ✓ EC2 AMIs: Shared with external accounts
+  #
+  # EXTERNAL ACCESS CATEGORIES:
+  #   • Public: Accessible by anonymous internet users (isPublic: true)
+  #   • Cross-Account: Shared with specific AWS accounts outside organization
+  #   • Federated: Accessible via SAML, OIDC, or AWS SSO from external identity providers
+  #   • Conditional: External access allowed only under specific conditions (IP, MFA, etc.)
+  #
+  # ARCHIVE RULES (False Positive Suppression):
+  #   Archive rules automatically suppress findings matching specific criteria:
+  #   
+  #   Example 1: Archive all non-public findings (only alert on truly public resources)
+  #     • Use case: Focus only on internet-exposed resources
+  #     • Filter: isPublic = false
+  #   
+  #   Example 2: Archive trusted external accounts (known partners, vendors)
+  #     • Use case: Suppress expected cross-account sharing with specific account IDs
+  #     • Filter: principal.AWS contains "arn:aws:iam::123456789012:root"
+  #   
+  #   Example 3: Archive findings with errors (incomplete analysis)
+  #     • Use case: Suppress findings where Access Analyzer couldn't complete analysis
+  #     • Filter: error exists = true
+  #
+  # ANALYZER TYPE 2: UNUSED ACCESS ANALYSIS
+  # ----------------------------------------
+  # Identifies unused IAM permissions and recommends least-privilege policies
+  #
+  # WHAT IS ANALYZED:
+  #   • IAM users: Last activity per service/action
+  #   • IAM roles: Last assumed date and service usage
+  #   • IAM policies: Actions granted but never used
+  #   • IAM groups: Inherited permissions and their usage
+  #
+  # UNUSED ACCESS DETECTION:
+  #   • Tracks IAM service usage via CloudTrail for specified time window (e.g., 90 days)
+  #   • Identifies services granted in IAM policies but never used
+  #   • Generates least-privilege policy recommendations with only used permissions
+  #   • Considers external authentication (AWS SSO, federated users)
+  #
+  # unused_access_age PARAMETER:
+  #   • 90 days (recommended): Balance between security and operational flexibility
+  #   • 180 days: For rarely used administrative permissions
+  #   • 30 days: Aggressive least-privilege enforcement (risk of breaking legitimate infrequent access)
+  #
+  # ARCHIVE RULES FOR UNUSED ACCESS:
+  #   Example: Archive AWS SSO roles (managed externally via Identity Center)
+  #     • Use case: AWS SSO roles managed by permission sets, not IAM directly
+  #     • Filter: resource contains "aws-reserved/sso.amazonaws.com/"
+  #     • Rationale: Unused access analysis not applicable to centrally managed roles
+  #
+  # MULTI-ANALYZER STRATEGY:
+  #   Organizations typically configure multiple analyzers:
+  #   1. External Access Analyzer: Enabled in all (active) regions (regional resources differ)
+  #   2. Unused Access Analyzer: Enabled in single region only (findings are global)
+  #   
+  #   ⚠️  UNUSED ACCESS ANALYZER - SINGLE REGION ONLY:
+  #     • Unused access findings are account-level (not resource-level)
+  #     • Running in multiple regions creates duplicate findings
+  #     • Enable in home region only (e.g., eu-central-1)
+  #     • External access analyzer should still run in all (active) regions
+  #
+  # FINDINGS SCOPE:
+  #   • organization: Analyze all resources across entire AWS organization (recommended)
+  #   • account: Analyze only resources in current account
+  #   • Benefits of organization scope: Detect cross-account access within organization
+  #
+  # FILTER SYNTAX:
+  #   Available conditions: 'equals', 'not_equals', 'contains', 'exists'
+  #   Filter keys documented at:
+  #   https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-reference-filter-keys.html
+  #
+  # INTEGRATION WITH SECURITY HUB:
+  #   • All Access Analyzer findings flow into Security Hub automatically
+  #   • Processed by NTC Security Tooling automation rules (enrichment, notification)
+  #   • Can suppress notifications for archived findings via automation rules
+  #
+  # PREREQUISITES:
+  #   ⚠️  Admin delegation for 'access-analyzer.amazonaws.com' required via NTC Organizations
+  # -------------------------------------------------------------------------------------------------------------------
+  iam_access_analyzers_configuration = [
+    {
+      regions       = ["eu-central-1", "us-east-1"]
+      analyzer_name = "ntc-external-access-analysis"
+      # external access analyzers help identify resources in your organization and accounts that are shared with an external entity
+      findings_type = "external_access_analysis"
+      # scope of analyzer can be current account or the entire organization 
+      findings_scope = "organization"
+      rules = [
+        {
+          rule_name = "archive-all-not-public"
+          filters = [
+            {
+              # the filter keys for IAM Access Analyzer can be found here:
+              # https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-reference-filter-keys.html
+              filter_key = "isPublic"
+              # valid conditions are 'equals', 'not_equals', 'contains' and 'exists'
+              condition = "equals"
+              values    = ["false"]
+            }
+          ]
+        },
+        {
+          rule_name = "archive-all-ntc-userids"
+          filters = [
+            {
+              filter_key = "error"
+              condition  = "exists"
+              values     = ["true"]
+            },
+            {
+              filter_key = "condition.aws:UserId"
+              condition  = "contains"
+              values     = ["AIDACKCEVSQ6C2EXAMPLE"]
+            }
+          ]
+        }
+      ]
+      # (optional) override settings for specific regions
+      region_overrides = {
+        "us-east-1" = {
+          analyzer_name = "ntc-external-access-analysis-use1"
+        }
+      }
+    },
+    # NOTE: unused access analyzer should only be enabled in a single region
+    # findings for the unused access analyzer do not change based on region
+    {
+      regions       = ["eu-central-1"]
+      analyzer_name = "ntc-unused-access-analysis"
+      # unused access analyzers help identify unused access in your organization and accounts
+      findings_type = "unused_access_analysis"
+      # scope of analyzer can be current account or the entire organization 
+      findings_scope = "organization"
+      # access age in days for which to generate findings for unused access
+      unused_access_age = 90
+      rules = [
+        {
+          rule_name = "archive-all-aws-sso-roles"
+          filters = [
+            {
+              filter_key = "resource"
+              condition  = "contains"
+              values     = ["aws-reserved/sso.amazonaws.com/"]
+            }
+          ]
+        }
+      ]
+      # (optional) override settings for specific regions
+      region_overrides = {}
+    }
+  ]
 }
