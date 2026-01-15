@@ -401,7 +401,7 @@ module "ntc_security_tooling" {
     # uses the security hub automation rules and asff syntax
     # https://docs.aws.amazon.com/securityhub/latest/userguide/automation-rules.html#automation-rules-criteria-actions
     # https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-findings-format.html
-    automation_rules = jsondecode(file("${path.module}/example_automation_rules.json"))
+    automation_rules = jsondecode(file("${path.module}/files/example_automation_rules.json"))
   }
 
   # -------------------------------------------------------------------------------------------------------------------
