@@ -199,7 +199,7 @@ import {
 # 6. Central Configuration Policies: Organization-wide security standards
 # =====================================================================================================================
 module "ntc_security_tooling" {
-  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=feat-provider-v6" # TODO: change to '2.0.0' when released 
+  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=2.0.0"
 
   # -------------------------------------------------------------------------------------------------------------------
   # HOME REGION CONFIGURATION
