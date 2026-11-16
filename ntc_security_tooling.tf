@@ -164,12 +164,12 @@ import {
 }
 
 data "aws_guardduty_detector" "existing" {
-  for_each = toset(["eu-central-1", "us-east-1"])
+  for_each = toset(["eu-central-1", "eu-central-2", "us-east-1"])
   region   = each.key
 }
 
 import {
-  for_each = toset(["eu-central-1", "us-east-1"])
+  for_each = toset(["eu-central-1", "eu-central-2", "us-east-1"])
   to       = module.ntc_security_tooling.module.regional_security_config[each.key].aws_guardduty_detector.ntc_guardduty[0]
   id       = "${data.aws_guardduty_detector.existing[each.key].id}@${each.key}"
 }
@@ -648,7 +648,7 @@ module "ntc_security_tooling" {
   #   ⚠️  Import existing GuardDuty detectors into Terraform state (see import blocks above)
   # -------------------------------------------------------------------------------------------------------------------
   guardduty_configuration = {
-    regions                      = ["eu-central-1", "us-east-1"]
+    regions                      = ["eu-central-1", "eu-central-2", "us-east-1"]
     finding_publishing_frequency = "SIX_HOURS"
 
     organization_config = {
@@ -767,7 +767,7 @@ module "ntc_security_tooling" {
   #   ⚠️  Admin delegation for 'inspector2.amazonaws.com' required via NTC Organizations
   # -------------------------------------------------------------------------------------------------------------------
   inspector_configuration = {
-    regions = ["eu-central-1", "us-east-1"]
+    regions = ["eu-central-1", "eu-central-2", "us-east-1"]
 
     organization_config = {
       auto_enable = true
@@ -797,7 +797,34 @@ module "ntc_security_tooling" {
     }
 
     # (optional) override settings for specific regions
-    region_overrides = {}
+    region_overrides = {
+      # lambda code scanning is not available in eu-central-2 (zurich)
+      # https://docs.aws.amazon.com/inspector/latest/user/inspector_regions.html
+      "eu-central-2" = {
+        organization_config = {
+          auto_enable = true
+          features = [
+            {
+              auto_enable = "NEW"
+              name        = "EC2"
+            },
+            {
+              auto_enable = "NEW"
+              name        = "ECR"
+            },
+            {
+              auto_enable = "NEW"
+              name        = "LAMBDA"
+            },
+            {
+              auto_enable = "NONE"
+              name        = "LAMBDA_CODE"
+            }
+          ]
+          invite_members_by_account_id = []
+        }
+      }
+    }
   }
 
   # -------------------------------------------------------------------------------------------------------------------
@@ -913,7 +940,7 @@ module "ntc_security_tooling" {
   # -------------------------------------------------------------------------------------------------------------------
   iam_access_analyzers_configuration = [
     {
-      regions       = ["eu-central-1", "us-east-1"]
+      regions       = ["eu-central-1", "eu-central-2", "us-east-1"]
       analyzer_name = "ntc-external-access-analysis"
       # external access analyzers help identify resources in your organization and accounts that are shared with an external entity
       findings_type = "external_access_analysis"
