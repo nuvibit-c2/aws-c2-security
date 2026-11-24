@@ -199,7 +199,7 @@ import {
 # 6. Central Configuration Policies: Organization-wide security standards
 # =====================================================================================================================
 module "ntc_security_tooling" {
-  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=2.1.2"
+  source = "github.com/nuvibit-terraform-collection/terraform-aws-ntc-security-tooling?ref=2.2.0"
 
   # -------------------------------------------------------------------------------------------------------------------
   # HOME REGION CONFIGURATION
@@ -282,6 +282,27 @@ module "ntc_security_tooling" {
     "eu-central-2",
     "us-east-1"
   ]
+
+  # -------------------------------------------------------------------------------------------------------------------
+  # FINDINGS STATE MACHINE - WORKFLOW TYPE AND LOGGING
+  # -------------------------------------------------------------------------------------------------------------------
+  # Step Functions state machine which processes every finding (enrichment, automation rules, notifications)
+  #
+  # WORKFLOW TYPE:
+  #   • Standard (default): billed per state transition, execution history in the Step Functions console
+  #   • Express: billed per request and duration, significantly cheaper for large numbers of findings.
+  #     A starter Lambda starts each execution synchronously (at-most-once, no retry of started executions),
+  #     executions are limited to 5 minutes, the console shows the history from the state machine logs
+  #   ⚠️  Changing the workflow type replaces the state machine
+  #
+  # LOGGING:
+  #   • Log level ALL, ERROR (default), FATAL or OFF. With Express use ALL for a view close to Standard workflows
+  #   • Execution data (input and output of states) contains finding details, enable only for troubleshooting
+  # -------------------------------------------------------------------------------------------------------------------
+  # values are the module defaults, written out for reference
+  securityhub_findings_state_machine_express_mode               = false
+  securityhub_findings_state_machine_log_level                  = "ERROR"
+  securityhub_findings_state_machine_log_include_execution_data = false
 
   # -------------------------------------------------------------------------------------------------------------------
   # FINDING ENRICHMENT - ADD ORGANIZATIONAL CONTEXT
